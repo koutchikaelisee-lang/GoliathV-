@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Goliath Manager V5</title>
+<style>
+    .scroll-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-left 40s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  30% { transform: translateX(0%); }    /* Arrivée du texte et début de la pause */
+  40% { transform: translateX(0%); }    /* Fin de la pause : le texte reste fixe ici */
+  90% { transform: translateX(-100%); } /* Sortie du texte */
+  100% { transform: translateX(-100%); }
+}
+
+.hero-banner {
+  overflow: hidden;
+  white-space: nowrap;
+}
+:root{--g:#087f3e;--bg:#f3f7f4;--line:#dce6df;--text:#17301f;--muted:#68746d;--red:#b3261e;--orange:#a86500}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--g);color:white;padding:17px}header div{max-width:1100px;margin:auto}
+nav style="{display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+nav button{white-space:nowrap;border:0;border-radius:9px;padding:10px 12px;background:#fff;font-weight:bold}nav button.active{background:#087f3e;color:#fff}
+main{max-width:1100px;margin:auto;padding:15px}.page{display:none}.page.active{display:block}
+.card,.hero{background:#fff;border-radius:16px;padding:16px;margin:11px 0;box-shadow:0 3px 14px #0001}.hero{background:linear-gradient(135deg,#087f3e,#0c9b4d);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{background:#fff;border-radius:14px;padding:13px}.big{font-size:24px;font-weight:800;margin-top:5px}.muted{font-size:12px;color:var(--muted)}.hero .muted{color:#e5f4ea}
+button.primary{background:#087f3e;color:white}button.secondary{background:#fff;color:#087f3e;border:1px solid var(--line)}button.danger{background:#fff0f0;color:var(--red);border:1px solid #f1cccc}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}.actions button{padding:10px 13px;border-radius:9px;border:0;font-weight:bold}
+.list{display:grid;gap:9px}.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.badge{display:inline-block;background:#e2f3e7;color:var(--g);border-radius:20px;padding:5px 9px;font-size:10px;font-weight:bold}.badge.warn{background:#fff0d8;color:var(--orange)}.badge.red{background:#ffe5e3;color:var(--red)}
+label{display:block;font-size:12px;font-weight:bold;margin:9px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd7cf;border-radius:9px;background:#fff;font-size:14px}textarea{min-height:65px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.table{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}
+.notice{padding:12px;border-radius:10px;background:#f1f8f3;border-left:5px solid var(--g);margin:8px 0}.notice.warn{background:#fff6e6;border-left-color:var(--orange)}.notice.red{background:#fff0ef;border-left-color:var(--red)}
+canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;background:#fff}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:14px;z-index:20}.modal.show{display:flex}.box{background:#fff;border-radius:17px;padding:19px;width:min(650px,100%);max-height:92vh;overflow:auto}.box h2{margin-top:0}.formactions{display:flex;gap:8px;margin-top:15px}.formactions button{flex:1}
+@media(max-width:760px){.grid,.kpis{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}}@media(max-width:430px){.grid,.kpis{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h2 style="margin:0">🐔 MAHUTIN AGRODIGITAL</h2>
+    <div class="muted">GOLIATH MANAGER V5 — fiche complète des lots</div>
+  </div>
+</header>
+
+<nav style="display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)">
+  <button class="active" onclick="show('home',this)">🏠 Accueil</button>
+  <button onclick="show('lots',this)">🐔 Lots</button>
+  <button onclick="show('records',this)">📝 Relevés</button>
+  <button onclick="show('analysis',this)">📊 Analyse</button>
+  <button onclick="show('profit',this)">💰 Rentabilité</button>
+  <button onclick="show('advice',this)">📚 Conseils</button>
+  <button onclick="show('profile',this)">👤 Profil</button>
+</nav>
+<main>
+<section id="home" class="page active">
+<div class="hero hero-banner">
+  <h2 id="hello"><span class="scroll-text" id="helloText">Bonjour, Éleveur 👋. Tu veux de l'aide à gérer ton poulailler ??? Tu es au bon endroit !!!</span></h2>
+  <div class="muted"><marquee>Pilotez vos lots Goliath depuis votre téléphone. Pour toutes vos préoccupations et suggestions ou conseils, veuillez-nous contacter via whatsapp au 2290155734801 ou par mail koutchikaelisee@gmail.com</marquee></div>
+</div>
+<div class="grid"><div class="kpi"><div class="muted">Lots actifs</div><div class="big" id="totalLots">0</div></div><div class="kpi"><div class="muted">Oiseaux vivants</div><div class="big" id="totalBirds">0</div></div><div class="kpi"><div class="muted">Coût total</div><div class="big" id="totalCost">0 F</div></div><div class="kpi"><div class="muted">Lot sélectionné</div><div class="big" id="activeName">—</div></div></div>
+<div class="actions"><button class="primary" onclick="openLot()">➕ Créer un lot</button><button class="secondary" onclick="openRecord()">📝 Ajouter un relevé</button><button class="secondary" onclick="show('analysis',document.querySelectorAll('nav button')[3])">📊 Voir analyse</button></div>
+<div class="card" id="homeDetail">Créez un lot pour commencer.</div>
+</section>
+
+<section id="lots" class="page"><div class="actions"><h2 style="flex:1">🐔 Mes lots</h2><button class="primary" onclick="openLot()">➕ Nouveau lot</button></div><div id="lotList" class="list"></div></section>
+
+<section id="records" class="page"><div class="actions"><h2 style="flex:1">📝 Historique des relevés</h2><button class="primary" onclick="openRecord()">➕ Relevé</button></div><div class="card table"><table><thead><tr><th>Date</th><th>Lot</th><th>Âge</th><th>Vivants</th><th>Poids moy.</th><th>Aliment</th><th>Coût</th></tr></thead><tbody id="recordsBody"></tbody></table></div></section>
+
+<section id="analysis" class="page"><div class="actions"><h2 style="flex:1">📊 Fiche complète du lot</h2><select id="analysisLot" onchange="setActive(+this.value)"></select></div><div id="lotSheet"></div></section>
+
+<section id="profit" class="page"><h2>💰 Rentabilité</h2><div class="card"><label>Prix de vente envisagé par Goliath vivant (F CFA)</label><input id="sellPrice" type="number" value="3500" oninput="profit()"><div class="kpis" style="margin-top:10px"><div class="kpi"><div class="muted">Coût</div><div class="big" id="pcost">0 F</div></div><div class="kpi"><div class="muted">CA</div><div class="big" id="prev">0 F</div></div><div class="kpi"><div class="muted">Bénéfice</div><div class="big" id="pbenef">0 F</div></div><div class="kpi"><div class="muted">Marge</div><div class="big" id="pmarge">0 %</div></div></div><div class="notice" id="profitMsg"></div></div></section>
+
+<section id="advice" class="page"><h2>📚 Conseils & repères</h2>
+<div class="notice">⚖️ <b>Poids :</b> comparez les relevés réalisés dans des conditions similaires. Les objectifs doivent être adaptés à votre souche, alimentation et conduite.</div>
+<div class="notice">🌾 <b>Indice de consommation :</b> il se calcule avec des données fiables de consommation et de gain de poids ; V5 l'affiche comme indicateur, pas comme diagnostic.</div>
+<div class="notice warn">☠️ <b>Mortalité :</b> une hausse inhabituelle doit conduire à vérifier les conditions d'élevage et, si nécessaire, à contacter un professionnel de santé animale.</div>
+<div class="notice">💰 <b>Rentabilité :</b> incluez poussins, aliment, santé, main-d'œuvre et autres charges avant de fixer le prix.</div>
+</section>
+
+<section id="profile" class="page"><h2>👤 Profil</h2><div class="card"><form id="profileForm"><div class="formgrid"><div><label>Nom</label><input id="name"></div><div><label>Téléphone</label><input id="phone"></div><div><label>Localisation</label><input id="loc"></div><div><label>Type d'éleveur</label><select id="ptype"><option>Éleveur débutant</option><option>Éleveur expérimenté</option><option>Producteur professionnel</option></select></div></div><div class="formactions"><button class="primary">💾 Enregistrer</button></div></form></div><div class="card"><button class="secondary" onclick="exportCSV()">📥 Exporter les relevés CSV</button> <button class="danger" onclick="resetAll()">🗑️ Effacer les données</button></div></section>
+</main>
+
+<div class="modal" id="lotModal"><div class="box"><h2>➕ Créer un lot Goliath</h2><form id="lotForm"><div class="formgrid"><div><label>Nom du lot</label><input id="lname" required></div><div><label>Effectif initial</label><input id="lcount" type="number" min="1" value="100" required></div><div><label>Date de mise en place</label><input id="ldate" type="date" required></div><div><label>Prix / poussin (F)</label><input id="lprice" type="number" min="0" value="700" required></div><div><label>Objectif poids final (kg)</label><input id="target" type="number" step=".01" min="0" value="2.5"></div><div><label>Âge objectif (jours)</label><input id="targetAge" type="number" min="1" value="90"></div></div><label>Fournisseur</label><input id="supplier"><div class="formactions"><button type="button" class="secondary" onclick="closeM('lotModal')">Annuler</button><button class="primary">Créer le lot</button></div></form></div></div>
+
+<div class="modal" id="recordModal"><div class="box"><h2>📝 Ajouter un relevé</h2><form id="recordForm"><label>Lot</label><select id="rlot"></select><div class="formgrid"><div><label>Date</label><input id="rdate" type="date" required></div><div><label>Effectif début</label><input id="rstart" type="number" min="0" required></div><div><label>Morts</label><input id="rdeath" type="number" min="0" value="0"></div><div><label>Vendus / retirés</label><input id="rsold" type="number" min="0" value="0"></div><div><label>Nombre pesé</label><input id="rweighed" type="number" min="1" value="10"></div><div><label>Poids total pesé (kg)</label><input id="rtotalweight" type="number" min="0" step=".01" required></div><div><label>Aliment consommé (kg)</label><input id="rfeed" type="number" min="0" step=".1" value="0"></div><div><label>Coût aliment (F)</label><input id="rcfeed" type="number" min="0" value="0"></div><div><label>Santé / vaccins (F)</label><input id="rchealth" type="number" min="0" value="0"></div><div><label>Main-d'œuvre (F)</label><input id="rclabor" type="number" min="0" value="0"></div><div><label>Autres coûts (F)</label><input id="rcother" type="number" min="0" value="0"></div></div><label>Observations</label><textarea id="robs"></textarea><div class="formactions"><button type="button" class="secondary" onclick="closeM('recordModal')">Annuler</button><button class="primary">💾 Enregistrer</button></div></form></div></div>
+
+<script>
+const KEY='GOLIATH_MANAGER_V5_DATA';
+let db=JSON.parse(localStorage.getItem(KEY)||'{"profile":{},"lots":[],"active":null}');
+const $=id=>document.getElementById(id), today=new Date().toISOString().slice(0,10);
+$('ldate').value=today;$('rdate').value=today;
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function money(n){return Math.round(n||0).toLocaleString('fr-FR')+' F CFA'}
+function lot(){return db.lots.find(x=>x.id===db.active)||null}
+function age(l,date=today){return Math.max(0,Math.floor((new Date(date+'T00:00:00')-new Date(l.date+'T00:00:00'))/86400000))}
+function show(id,b){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');if(id==='analysis')renderSheet();if(id==='profit')profit()}
+function openLot(){$('lname').value='LOT GOLIATH #'+String(db.lots.length+1).padStart(3,'0');$('lotModal').classList.add('show')}
+function closeM(id){$(id).classList.remove('show')}
+function openRecord(){if(!db.lots.length){alert('Créez d’abord un lot.');return}$('rlot').innerHTML=db.lots.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');let l=lot()||db.lots[0];$('rlot').value=l.id;$('rstart').value=l.current;$('rdate').value=today;$('recordModal').classList.add('show')}
+function setActive(id){db.active=id;save()}
+$('lotForm').addEventListener('submit',e=>{e.preventDefault();let n=+$('lcount').value,id=Date.now();db.lots.push({id,name:$('lname').value,initial:n,current:n,date:$('ldate').value,price:+$('lprice').value,target:+$('target').value,targetAge:+$('targetAge').value,supplier:$('supplier').value,deaths:0,feed:0,expenses:0,sold:0,records:[]});db.active=id;save();closeM('lotModal')});
+$('recordForm').addEventListener('submit',e=>{e.preventDefault();let l=db.lots.find(x=>x.id==+$('rlot').value),st=+$('rstart').value,d=+$('rdeath').value,s=+$('rsold').value,w=+$('rweighed').value,tw=+$('rtotalweight').value,f=+$('rfeed').value,c=[+$('rcfeed').value,+$('rchealth').value,+$('rclabor').value,+$('rcother').value].reduce((a,b)=>a+b,0);if(!l||d+s>st){alert('Vérifiez l’effectif : morts + vendus ne doivent pas dépasser le début de période.');return}l.current=st-d-s;l.deaths+=d;l.sold+=s;l.feed+=f;l.expenses+=c;l.records.push({date:$('rdate').value,start:st,deaths:d,sold:s,weighed:w,totalWeight:tw,avg:tw/w,feed:f,cost:c,obs:$('robs').value});db.active=l.id;save();closeM('recordModal');$('recordForm').reset();$('rdate').value=today});
+$('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile={name:$('name').value,phone:$('phone').value,location:$('loc').value,type:$('ptype').value};save();alert('Profil enregistré.')});
+function render(){
+  let l=lot();
+  let greeting = db.profile.name ? 'Bonjour, ' + db.profile.name + ' 👋' : 'Bonjour, Éleveur 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!';
+  if($('helloText')) $('helloText').textContent = greeting;
+  
+  $('totalLots').textContent=db.lots.filter(x=>x.current>0).length;
+  $('totalBirds').textContent=db.lots.reduce((a,x)=>a+x.current,0);
+  $('totalCost').textContent=money(db.lots.reduce((a,x)=>a+x.initial*x.price+x.expenses,0));
+  $('activeName').textContent=l?l.name:'—';
+  if(l){
+    let last=l.records.at(-1),m=l.deaths/l.initial*100;
+    $('homeDetail').innerHTML=`<h3>${l.name}</h3><div class="muted">Mis en place le ${new Date(l.date+'T00:00:00').toLocaleDateString('fr-FR')}</div><div class="kpis" style="margin-top:10px"><div class="kpi">Âge<div class="big">${age(l)} j</div></div><div class="kpi">Vivants<div class="big">${l.current}</div></div><div class="kpi">Mortalité<div class="big">${m.toFixed(1)} %</div></div><div class="kpi">Poids<div class="big">${last?last.avg.toFixed(2)+' kg':'—'}</div></div></div>`
+  }else $('homeDetail').textContent='Créez un lot pour commencer.';
+  $('lotList').innerHTML=db.lots.length?db.lots.map(x=>`<div class="item"><div><b>${x.name}</b><div class="muted">${x.current}/${x.initial} vivants · âge ${age(x)} j · ${x.records.length} relevés</div></div><button class="secondary" onclick="db.active=${x.id};save();show('analysis',document.querySelectorAll('nav button')[3])">Ouvrir</button></div>`).join(''):'<div class="card">Aucun lot.</div>';
+  let rows=[];db.lots.forEach(l=>l.records.forEach(r=>rows.push({l,r})));rows.sort((a,b)=>b.r.date.localeCompare(a.r.date));$('recordsBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${x.r.date}</td><td>${x.l.name}</td><td>${age(x.l,x.r.date)} j</td><td>${x.r.start-x.r.deaths-x.r.sold}</td><td>${x.r.avg.toFixed(2)} kg</td><td>${x.r.feed.toFixed(1)} kg</td><td>${money(x.r.cost)}</td></tr>`).join(''):'<tr><td colspan="7">Aucun relevé.</td></tr>';
+  $('name').value=db.profile.name||'';$('phone').value=db.profile.phone||'';$('loc').value=db.profile.location||'';$('ptype').value=db.profile.type||'Éleveur débutant';renderSheet();profit()
+}
+function renderSheet(){let l=lot();$('analysisLot').innerHTML=db.lots.map(x=>`<option value="${x.id}" ${x.id===db.active?'selected':''}>${x.name}</option>`).join('');if(!l){$('lotSheet').innerHTML='<div class="card">Créez un lot.</div>';return}let last=l.records.at(-1),m=l.initial?l.deaths/l.initial*100:0,feedBird=l.current?l.feed/l.current:0,weight=last?last.avg:0,progress=l.target?Math.min(100,weight/l.target*100):0;let alert=m>10?'red':m>5?'warn':'';let msg=m>10?'🔴 Mortalité élevée selon le seuil indicatif du prototype.':m>5?'🟠 Mortalité à surveiller.':'🟢 Mortalité dans la zone basse du prototype.';let gap=l.target&&last?(weight-l.target).toFixed(2):'—';
+$('lotSheet').innerHTML=`<div class="hero"><h2 style="margin:0">${l.name}</h2><div class="muted">Âge : ${age(l)} jours (${(age(l)/7).toFixed(1)} semaines) · Objectif : ${l.target} kg à ${l.targetAge} jours</div></div>
+<div class="kpis"><div class="kpi">🐔 Vivants<div class="big">${l.current}</div></div><div class="kpi">⚖️ Poids moyen<div class="big">${last?weight.toFixed(2)+' kg':'—'}</div></div><div class="kpi">☠️ Mortalité<div class="big">${m.toFixed(1)} %</div></div><div class="kpi">🌾 Aliment<div class="big">${l.feed.toFixed(1)} kg</div></div></div>
+<div class="card"><h3>🎯 Objectif de croissance</h3><div class="muted">Dernier poids : ${last?weight.toFixed(2):'—'} kg · Écart à l’objectif : ${gap} kg</div><div style="background:#e5ece7;border-radius:20px;height:16px;margin-top:10px"><div style="width:${progress}%;background:#087f3e;height:16px;border-radius:20px"></div></div><p>${progress.toFixed(0)} % de l’objectif de poids saisi.</p></div>
+<div class="notice ${alert}">${msg}</div>
+<div class="card"><h3>📈 Historique du poids</h3><canvas id="sheetChart" width="900" height="250"></canvas></div>
+<div class="card"><h3>📋 Résumé économique</h3><div class="kpis"><div class="kpi">Poussins<div class="big">${money(l.initial*l.price)}</div></div><div class="kpi">Autres coûts<div class="big">${money(l.expenses)}</div></div><div class="kpi">Coût total<div class="big">${money(l.initial*l.price+l.expenses)}</div></div><div class="kpi">Coût / vivant<div class="big">${money(l.current?(l.initial*l.price+l.expenses)/l.current:0)}</div></div></div><div class="muted" style="margin-top:10px">Aliment cumulé : ${l.feed.toFixed(1)} kg · Aliment / vivant restant : ${feedBird.toFixed(1)} kg</div></div>`;
+drawChart(l.records)}
+function drawChart(rs){let c=$('sheetChart');if(!c)return;let x=c.getContext('2d'),w=c.width,h=c.height;x.clearRect(0,0,w,h);if(!rs.length){x.font='16px Arial';x.fillText('Ajoutez un relevé pour afficher la courbe.',25,45);return}let v=rs.map(r=>r.avg),mx=Math.max(...v)*1.2,mn=Math.max(0,Math.min(...v)*.8),p=45;x.strokeStyle='#ccd6ce';x.beginPath();x.moveTo(p,15);x.lineTo(p,h-35);x.lineTo(w-15,h-35);x.stroke();x.strokeStyle='#087f3e';x.lineWidth=3;x.beginPath();v.forEach((q,i)=>{let xx=p+i*(w-p-25)/Math.max(1,v.length-1),yy=h-35-(q-mn)/(mx-mn||1)*(h-55);i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke()}
+function profit(){let l=lot();if(!l){$('pcost').textContent='0 F';$('prev').textContent='0 F';$('pbenef').textContent='0 F';$('pmarge').textContent='0 %';$('profitMsg').textContent='Créez un lot.';return}let cost=l.initial*l.price+l.expenses,p=+$('sellPrice').value||0,rev=l.current*p,b=rev-cost,m=rev?b/rev*100:0;$('pcost').textContent=money(cost);$('prev').textContent=money(rev);$('pbenef').textContent=money(b);$('pmarge').textContent=m.toFixed(1)+' %';$('profitMsg').innerHTML=b>=0?'🟢 <b>Simulation bénéficiaire.</b> Prix de revient par vivant : '+money(l.current?cost/l.current:0):'🔴 <b>Simulation déficitaire.</b> Prix de revient par vivant : '+money(l.current?cost/l.current:0)}
+function exportCSV(){let a=[['Date','Lot','Age jours','Début','Morts','Vendus','Vivants','Poids moyen kg','Aliment kg','Coût F CFA','Observations']];db.lots.forEach(l=>l.records.forEach(r=>a.push([r.date,l.name,age(l,r.date),r.start,r.deaths,r.sold,r.start-r.deaths-r.sold,r.avg.toFixed(2),r.feed,r.cost,r.obs])));let csv=a.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(';')).join('\n'),b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a1=document.createElement('a');a1.href=URL.createObjectURL(b);a1.download='goliath_manager_v5_releves.csv';a1.click()}
+function resetAll(){if(confirm('Effacer toutes les données ?')){localStorage.removeItem(KEY);location.reload()}}
+render();
+</script>
+</body>
+</html>
