@@ -2,79 +2,203 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Goliath Manager V5</title>
+<title>Goliath Manager V11 — Cloud Firestore</title>
 <style>
-  .scroll-text {
-    display: inline-block;
-    white-space: nowrap;
-    animation: scroll-left 40s linear infinite;
+    .scroll-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: scroll-left 40s linear infinite;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  30% { transform: translateX(0%); }    /* Arrivée du texte et début de la pause */
+  40% { transform: translateX(0%); }    /* Fin de la pause : le texte reste fixe ici */
+  90% { transform: translateX(-100%); } /* Sortie du texte */
+  100% { transform: translateX(-100%); }
+}
+
+.hero-banner {
+  overflow: hidden;
+  white-space: nowrap;
+}
+:root{--g:#087f3e;--bg:#f3f7f4;--line:#dce6df;--text:#17301f;--muted:#68746d;--red:#b3261e;--orange:#a86500}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:var(--g);color:white;padding:17px}header div{max-width:1100px;margin:auto}
+nav style="{display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+nav button{white-space:nowrap;border:0;border-radius:9px;padding:10px 12px;background:#fff;font-weight:bold}nav button.active{background:#087f3e;color:#fff}
+main{max-width:1100px;margin:auto;padding:15px}.page{display:none}.page.active{display:block}
+.card,.hero{background:#fff;border-radius:16px;padding:16px;margin:11px 0;box-shadow:0 3px 14px #0001}.hero{background:linear-gradient(135deg,#087f3e,#0c9b4d);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{background:#fff;border-radius:14px;padding:13px}.big{font-size:24px;font-weight:800;margin-top:5px}.muted{font-size:12px;color:var(--muted)}.hero .muted{color:#e5f4ea}
+button.primary{background:#087f3e;color:white}button.secondary{background:#fff;color:#087f3e;border:1px solid var(--line)}button.danger{background:#fff0f0;color:var(--red);border:1px solid #f1cccc}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}.actions button{padding:10px 13px;border-radius:9px;border:0;font-weight:bold}
+.list{display:grid;gap:9px}.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.badge{display:inline-block;background:#e2f3e7;color:var(--g);border-radius:20px;padding:5px 9px;font-size:10px;font-weight:bold}.badge.warn{background:#fff0d8;color:var(--orange)}.badge.red{background:#ffe5e3;color:var(--red)}
+label{display:block;font-size:12px;font-weight:bold;margin:9px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd7cf;border-radius:9px;background:#fff;font-size:14px}textarea{min-height:65px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.table{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}
+.notice{padding:12px;border-radius:10px;background:#f1f8f3;border-left:5px solid var(--g);margin:8px 0}.notice.warn{background:#fff6e6;border-left-color:var(--orange)}.notice.red{background:#fff0ef;border-left-color:var(--red)}
+canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;background:#fff}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:14px;z-index:20}.modal.show{display:flex}.box{background:#fff;border-radius:17px;padding:19px;width:min(650px,100%);max-height:92vh;overflow:auto}.box h2{margin-top:0}.formactions{display:flex;gap:8px;margin-top:15px}.formactions button{flex:1}
+@media(max-width:760px){.grid,.kpis{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}}@media(max-width:430px){.grid,.kpis{grid-template-columns:1fr}}
+
+/* V6 ADDITION - STOCK & ALIMENTS */
+.stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stock-low{border-left:5px solid var(--red)!important;background:#fff5f4!important}
+.stock-ok{border-left:5px solid var(--g)!important}
+@media(max-width:760px){.stock-grid{grid-template-columns:1fr}}
+
+
+/* ===== V7 : TABLEAU DE BORD INTELLIGENT ===== */
+.intel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.intel-card{padding:14px;border-radius:14px;background:#fff;border:1px solid #e5e7eb;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.intel-card h3{margin:0 0 8px;font-size:15px}
+.intel-big{font-size:24px;font-weight:800}
+.intel-status{padding:14px;border-radius:14px;background:#fff;border:1px solid #e5e7eb;margin-bottom:12px}
+.intel-good{border-left:6px solid var(--g)!important}
+.intel-warn{border-left:6px solid #f59e0b!important}
+.intel-danger{border-left:6px solid var(--red)!important}
+.intel-action{padding:10px;border-radius:10px;background:#f8fafc;margin:7px 0}
+.intel-muted{font-size:12px;opacity:.72}
+@media(max-width:900px){.intel-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.intel-grid{grid-template-columns:1fr 1fr}}
+
+
+/* ===== V8 : MARKETPLACE ===== */
+.market-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.market-card{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:13px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.market-card img{width:100%;height:150px;object-fit:cover;border-radius:11px;background:#f1f5f9}
+.market-price{font-size:20px;font-weight:800;margin:6px 0}
+.market-tag{display:inline-block;padding:4px 8px;border-radius:999px;background:#eef2ff;font-size:11px;margin:2px}
+.market-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.market-empty{padding:18px;text-align:center;background:#f8fafc;border-radius:12px}
+.market-tabs{display:flex;gap:7px;overflow:auto;margin:10px 0}
+.market-tabs button{white-space:nowrap}
+@media(max-width:850px){.market-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.market-grid{grid-template-columns:1fr}}
+
+
+/* ===== V9 : ECOSYSTEME ===== */
+.eco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.eco-card{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.eco-number{font-size:25px;font-weight:800}
+.eco-list{padding-left:18px}
+.eco-pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#f1f5f9;font-size:12px;margin:3px}
+.order-card{background:#fff;border:1px solid #e5e7eb;border-radius:13px;padding:12px;margin:8px 0}
+.order-status{font-weight:700}
+@media(max-width:850px){.eco-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.eco-grid{grid-template-columns:1fr}}
+
+
+/* ===== V10 : COMPTE CLOUD / PREPARATION FIREBASE ===== */
+.cloud-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.cloud-card{background:#fff;border:1px solid #e5e7eb;border-radius:15px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.cloud-ok{border-left:6px solid var(--g)!important}
+.cloud-off{border-left:6px solid #f59e0b!important}
+.cloud-user{font-size:18px;font-weight:800}
+.cloud-small{font-size:12px;opacity:.72}
+@media(max-width:700px){.cloud-grid{grid-template-columns:1fr}}
+
+
+/* V12 — Calculateur élevage */
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
+.calc-card{background:#fff;border:1px solid #e5e7eb;border-radius:16px;padding:16px;box-shadow:0 4px 14px rgba(0,0,0,.05)}
+.calc-card h3{margin-top:0}.calc-card label{display:block;font-weight:600;margin:10px 0 6px}.calc-card input,.calc-card select{width:100%;padding:10px;border:1px solid #d1d5db;border-radius:10px;font-size:15px;box-sizing:border-box}.calc-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:14px}.calc-result{padding:14px;border-radius:12px;background:#f7f7f7}.calc-result strong{display:block;font-size:20px;margin-top:4px}.calc-note{font-size:13px;line-height:1.5;opacity:.8}.calc-btn{margin-top:12px;padding:11px 15px;border:0;border-radius:10px;cursor:pointer;font-weight:700}.calc-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}.calc-table th,.calc-table td{padding:8px;border-bottom:1px solid #eee;text-align:left}.calc-table input{padding:7px}.calc-ok{margin-top:10px;font-weight:700}
+
+/* WhatsApp assistance flottante */
+.whatsapp-help{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  padding:12px 16px;
+  border-radius:999px;
+  text-decoration:none;
+  font-weight:800;
+  font-size:14px;
+  background:#25D366;
+  color:#fff;
+  box-shadow:0 6px 20px rgba(0,0,0,.22);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.whatsapp-help:hover{
+  transform:translateY(-2px);
+  box-shadow:0 9px 24px rgba(0,0,0,.28);
+}
+.whatsapp-help .wa-icon{
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#fff;
+  color:#25D366;
+  font-size:19px;
+}
+@media(max-width:600px){
+  .whatsapp-help{
+    right:12px;
+    bottom:12px;
+    padding:10px 13px;
+    font-size:13px;
   }
-
-  @keyframes scroll-left {
-    0% { transform: translateX(100%); }
-    30% { transform: translateX(0%); }    /* Arrivée du texte et début de la pause */
-    40% { transform: translateX(0%); }    /* Fin de la pause : le texte reste fixe ici */
-    90% { transform: translateX(-100%); } /* Sortie du texte */
-    100% { transform: translateX(-100%); }
+  .whatsapp-help .wa-label{
+    display:none;
   }
-
-  .hero-banner {
-    overflow: hidden;
-    white-space: nowrap;
+  .whatsapp-help .wa-icon{
+    width:38px;
+    height:38px;
+    font-size:22px;
   }
-  :root{--g:#087f3e;--bg:#f3f7f4;--line:#dce6df;--text:#17301f;--muted:#68746d;--red:#b3261e;--orange:#a86500}
-  *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-  header{background:var(--g);color:white;padding:17px}header div{max-width:1100px;margin:auto}
-  nav{display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
-  nav button{white-space:nowrap;border:0;border-radius:9px;padding:10px 12px;background:#fff;font-weight:bold}nav button.active{background:#087f3e;color:#fff}
-  main{max-width:1100px;margin:auto;padding:15px}.page{display:none}.page.active{display:block}
-  .card,.hero{background:#fff;border-radius:16px;padding:16px;margin:11px 0;box-shadow:0 3px 14px #0001}.hero{background:linear-gradient(135deg,#087f3e,#0c9b4d);color:#fff}
-  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{background:#fff;border-radius:14px;padding:13px}.big{font-size:24px;font-weight:800;margin-top:5px}.muted{font-size:12px;color:var(--muted)}.hero .muted{color:#e5f4ea}
-  button.primary{background:#087f3e;color:white}button.secondary{background:#fff;color:#087f3e;border:1px solid var(--line)}button.danger{background:#fff0f0;color:var(--red);border:1px solid #f1cccc}
-  .actions{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}.actions button{padding:10px 13px;border-radius:9px;border:0;font-weight:bold}
-  .list{display:grid;gap:9px}.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-  .badge{display:inline-block;background:#e2f3e7;color:var(--g);border-radius:20px;padding:5px 9px;font-size:10px;font-weight:bold}.badge.warn{background:#fff0d8;color:var(--orange)}.badge.red{background:#ffe5e3;color:var(--red)}
-  label{display:block;font-size:12px;font-weight:bold;margin:9px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd7cf;border-radius:9px;background:#fff;font-size:14px}textarea{min-height:65px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-  .table{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}
-  .notice{padding:12px;border-radius:10px;background:#f1f8f3;border-left:5px solid var(--g);margin:8px 0}.notice.warn{background:#fff6e6;border-left-color:var(--orange)}.notice.red{background:#fff0ef;border-left-color:var(--red)}
-  canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;background:#fff}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:14px;z-index:20}.modal.show{display:flex}.box{background:#fff;border-radius:17px;padding:19px;width:min(650px,100%);max-height:92vh;overflow:auto}.box h2{margin-top:0}.formactions{display:flex;gap:8px;margin-top:15px}.formactions button{flex:1}
+}
 
-  /* STYLES SUPPLÉMENTAIRES POUR LES OUTILS ÉLEVEURS */
-  .eleveur-help-container { font-family: Arial, sans-serif; color: #2c3e50; max-width: 1000px; margin: 15px auto; }
-  .help-card { background: #ffffff; border-radius: 12px; padding: 18px; margin-bottom: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.06); border-left: 5px solid #087f3e; }
-  .help-card h3 { margin-top: 0; color: #087f3e; display: flex; align-items: center; gap: 8px; font-size: 1.2em; }
-  .calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; margin-top: 15px; }
-  .calc-box { background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px solid #e9ecef; }
-  .calc-box h4 { margin-top: 0; color: #17301f; }
-  .calc-box button { width: 100%; background: #087f3e; color: white; border: none; padding: 10px; margin-top: 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-  .calc-box button:hover { background: #0c9b4d; }
-  .result-display { margin-top: 15px; padding: 10px; background: #e8f8f5; border: 1px solid #a3e4d7; border-radius: 5px; font-weight: bold; color: #117a65; text-align: center; }
-  .help-table-wrapper { overflow-x: auto; }
-  .help-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  .help-table th, .help-table td { border: 1px solid #dee2e6; padding: 9px; text-align: left; font-size: 0.88em; }
-  .help-table th { background-color: #087f3e; color: white; }
-  .advice-list { padding-left: 20px; line-height: 1.6; }
-  .advice-list li { margin-bottom: 10px; }
-  .whatsapp-btn { position: fixed; bottom: 20px; right: 20px; background-color: #25d366; color: white; border-radius: 50px; padding: 12px 20px; text-decoration: none; font-weight: bold; box-shadow: 0 4px 10px rgba(0,0,0,0.25); display: flex; align-items: center; gap: 8px; z-index: 1000; }
-  .whatsapp-btn:hover { background-color: #128c7e; }
 
-  @media(max-width:760px){.grid,.kpis{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}}@media(max-width:430px){.grid,.kpis{grid-template-columns:1fr}}
+/* V13 — Calculateur Goliath simplifié */
+.calc-main-card{margin-bottom:12px}
+.calc-highlight{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px;margin:9px 0;border-radius:12px;background:#f1f8f3;border-left:5px solid var(--g)}
+.calc-highlight span{font-size:13px}
+.calc-highlight strong{font-size:20px}
+.calc-result-row{display:flex;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:13px}
+.calc-result-row strong{font-weight:800}
+.calc-note{font-size:11px;color:var(--muted);line-height:1.45;margin:9px 0}
+
 </style>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EDE28G0XD9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-EDE28G0XD9');
+</script>
+
 </head>
 <body>
+
+<a class="whatsapp-help"
+   href="https://wa.me/2290155734801?text=Bonjour%2C%20je%20suis%20utilisateur%20de%20GOLIATH%20MANAGER%20et%20j%27ai%20besoin%20d%27aide%20concernant%20mon%20%C3%A9levage."
+   target="_blank"
+   rel="noopener noreferrer"
+   aria-label="Contacter GOLIATH MANAGER sur WhatsApp">
+  <span class="wa-icon">☏</span>
+  <span class="wa-label">Besoin d'aide ? WhatsApp</span>
+</a>
+
 <header>
   <div>
     <h2 style="margin:0">🐔 MAHUTIN AGRODIGITAL</h2>
-    <div class="muted">GOLIATH MANAGER V5 — fiche complète des lots</div>
+    <div class="muted">GOLIATH MANAGER V11 — plateforme cloud Firestore</div>
   </div>
 </header>
 
-<nav>
+<nav style="display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)">
   <button class="active" onclick="show('home',this)">🏠 Accueil</button>
   <button onclick="show('lots',this)">🐔 Lots</button>
   <button onclick="show('records',this)">📝 Relevés</button>
   <button onclick="show('analysis',this)">📊 Analyse</button>
-  <button onclick="show('profit',this)">💰 Rentabilité</button>
+  <button onclick="show('profit',this)">💰 Rentabilité</button><button onclick="show('intelligence',this)">🧠 Intelligence</button><button onclick="show('marketplace',this)">🛒 Marketplace</button><button onclick="show('ecosysteme',this)">🚀 Écosystème</button><button onclick="show('cloud',this)">☁️ Compte Cloud</button><button onclick="show('calculator',this)">🧮 Calculateur</button>
+  <button onclick="show('stock',this)">📦 Stock & Aliments</button>
   <button onclick="show('advice',this)">📚 Conseils</button>
   <button onclick="show('profile',this)">👤 Profil</button>
 </nav>
@@ -97,117 +221,164 @@
 
 <section id="profit" class="page"><h2>💰 Rentabilité</h2><div class="card"><label>Prix de vente envisagé par Goliath vivant (F CFA)</label><input id="sellPrice" type="number" value="3500" oninput="profit()"><div class="kpis" style="margin-top:10px"><div class="kpi"><div class="muted">Coût</div><div class="big" id="pcost">0 F</div></div><div class="kpi"><div class="muted">CA</div><div class="big" id="prev">0 F</div></div><div class="kpi"><div class="muted">Bénéfice</div><div class="big" id="pbenef">0 F</div></div><div class="kpi"><div class="muted">Marge</div><div class="big" id="pmarge">0 %</div></div></div><div class="notice" id="profitMsg"></div></div></section>
 
-<!-- SECTION CONSEILS ENRICHIE -->
-<section id="advice" class="page">
-  <h2>📚 Conseils & Outils pour Éleveurs</h2>
-  
-  <div class="notice">⚖️ <b>Poids :</b> comparez les relevés réalisés dans des conditions similaires. Les objectifs doivent être adaptés à votre souche, alimentation et conduite.</div>
-  <div class="notice">🌾 <b>Indice de consommation :</b> il se calcule avec des données fiables de consommation et de gain de poids ; V5 l'affiche comme indicateur, pas comme diagnostic.</div>
-  <div class="notice warn">☠️ <b>Mortalité :</b> une hausse inhabituelle doit conduire à vérifier les conditions d'élevage et, si nécessaire, à contacter un professionnel de santé animale.</div>
-  <div class="notice">💰 <b>Rentabilité :</b> incluez poussins, aliment, santé, main-d'œuvre et autres charges avant de fixer le prix.</div>
+<section id="advice" class="page"><h2>📚 Conseils & repères</h2>
+<div class="notice">⚖️ <b>Poids :</b> comparez les relevés réalisés dans des conditions similaires. Les objectifs doivent être adaptés à votre souche, alimentation et conduite.</div>
+<div class="notice">🌾 <b>Indice de consommation :</b> il se calcule avec des données fiables de consommation et de gain de poids ; V5 l'affiche comme indicateur, pas comme diagnostic.</div>
+<div class="notice warn">☠️ <b>Mortalité :</b> une hausse inhabituelle doit conduire à vérifier les conditions d'élevage et, si nécessaire, à contacter un professionnel de santé animale.</div>
+<div class="notice">💰 <b>Rentabilité :</b> incluez poussins, aliment, santé, main-d'œuvre et autres charges avant de fixer le prix.</div>
+</section>
 
-  <div class="eleveur-help-container">
-    <!-- 1. CALCULATEURS D'AIDE À LA DÉCISION -->
-    <div class="help-card">
-      <h3>🧮 Calculateurs Rapides pour l'Éleveur</h3>
-      <div class="calc-grid">
-        
-        <!-- Calculateur 1 : Estimation de la Ration -->
-        <div class="calc-box">
-          <h4>Ration Alimentaire Quotidienne</h4>
-          <label for="effectif">Effectif du lot (nombre d'oiseaux) :</label>
-          <input type="number" id="effectif" placeholder="Ex: 100" min="1">
 
-          <label for="ageSemaine">Stade / Âge des sujets :</label>
-          <select id="ageSemaine">
-            <option value="15">Semaine 1 (~15g / sujet)</option>
-            <option value="30">Semaine 2 (~30g / sujet)</option>
-            <option value="50">Semaine 3 (~50g / sujet)</option>
-            <option value="70">Semaine 4 (~70g / sujet)</option>
-            <option value="90">Semaine 5 à 8 (~90g / sujet)</option>
-            <option value="120">Semaine 9 et plus (~120g / sujet)</option>
+<section id="stock" class="page">
+<div class="actions"><h2 style="flex:1">📦 Stock & Aliments</h2>
+<button class="primary" onclick="openPurchase()">➕ Enregistrer un achat</button>
+<button class="secondary" onclick="openConsumption()">🌾 Consommation</button></div>
+<div class="stock-grid">
+<div class="kpi"><div class="muted">Stock total</div><div class="big" id="stockTotalKg">0 kg</div></div>
+<div class="kpi"><div class="muted">Valeur du stock</div><div class="big" id="stockValue">0 F</div></div>
+<div class="kpi"><div class="muted">Alertes stock</div><div class="big" id="stockAlerts">0</div></div>
+</div>
+<div class="card"><h3>🌾 Mes aliments en stock</h3><div id="stockList" class="list"></div></div>
+<div class="card"><h3>🛒 Historique des achats</h3><div class="table"><table>
+<thead><tr><th>Date</th><th>Aliment</th><th>Quantité</th><th>Prix total</th><th>Prix/kg</th><th>Fournisseur</th></tr></thead>
+<tbody id="purchaseBody"></tbody></table></div></div>
+<div class="card"><h3>🐔 Consommation des lots</h3><div class="table"><table>
+<thead><tr><th>Date</th><th>Lot</th><th>Aliment</th><th>Kg</th><th>Coût</th><th>Coût/oiseau</th></tr></thead>
+<tbody id="consumptionBody"></tbody></table></div></div>
+</section>
+
+<div class="modal" id="purchaseModal"><div class="box"><h2>🛒 Enregistrer un achat d'aliment</h2>
+<form id="purchaseForm"><div class="formgrid">
+<div><label>Date</label><input id="pdate" type="date" required></div>
+<div><label>Type d'aliment</label><select id="pfeed"><option>Starter</option><option>Croissance</option><option>Finition</option><option>Autre</option></select></div>
+<div><label>Quantité (kg)</label><input id="pqty" type="number" min="0.01" step=".01" required></div>
+<div><label>Prix total (F CFA)</label><input id="ptotal" type="number" min="0" required></div>
+<div><label>Seuil d'alerte (kg)</label><input id="pthreshold" type="number" min="0" step=".01" value="25"></div>
+<div><label>Fournisseur</label><input id="psupplier"></div>
+</div><div class="formactions">
+<button type="button" class="secondary" onclick="closeM('purchaseModal')">Annuler</button>
+<button class="primary">💾 Ajouter au stock</button></div></form></div></div>
+
+<div class="modal" id="consumptionModal"><div class="box"><h2>🌾 Enregistrer une consommation</h2>
+<form id="consumptionForm"><label>Lot</label><select id="clot" required></select>
+<div class="formgrid"><div><label>Date</label><input id="cdate" type="date" required></div>
+<div><label>Type d'aliment</label><select id="cfeed" required></select></div>
+<div><label>Quantité consommée (kg)</label><input id="cqty" type="number" min="0.01" step=".01" required></div></div>
+<div class="notice">Le coût est calculé automatiquement à partir du prix moyen d'achat de l'aliment.</div>
+<div class="formactions"><button type="button" class="secondary" onclick="closeM('consumptionModal')">Annuler</button>
+<button class="primary">💾 Enregistrer</button></div></form></div></div>
+
+
+<section id="intelligence" class="page">
+  <h2>🧠 Intelligence de l'élevage</h2>
+  <div id="intelStatus" class="intel-status intel-warn">Chargement de l'analyse...</div>
+  <div id="intelCards" class="intel-grid"></div>
+  <div class="card"><h3>🐔 Analyse des lots</h3><div id="intelLots"><p>Ajoutez un lot.</p></div></div>
+  <div class="card"><h3>💡 Actions recommandées</h3><div id="intelActions"><p>En attente de données.</p></div></div>
+  <div class="card"><h3>🔮 Prévisions & indicateurs</h3><div id="intelForecast"><p>En attente de données.</p></div></div>
+  <div class="notice warn"><b>ℹ️ À retenir :</b> le score affiché est un indicateur de prototype. Il ne remplace pas l'observation du poulailler ni l'avis d'un professionnel de santé animale.</div>
+</section>
+
+<section id="marketplace" class="page">
+  <div class="actions">
+    <h2 style="flex:1">🛒 Marketplace</h2>
+    <button class="primary" onclick="openMarketModal()">➕ Publier une annonce</button>
+  </div>
+  <div class="card">
+    <p><b>Le marché GOLIATH</b> — annonces locales de poulets, poussins, aliments et matériel.</p>
+    <div class="market-tabs">
+      <button class="secondary" onclick="marketFilter='all';renderMarketplace()">Tout</button>
+      <button class="secondary" onclick="marketFilter='birds';renderMarketplace()">🐔 Poulets</button>
+      <button class="secondary" onclick="marketFilter='chicks';renderMarketplace()">🐣 Poussins</button>
+      <button class="secondary" onclick="marketFilter='feed';renderMarketplace()">🌾 Aliments</button>
+      <button class="secondary" onclick="marketFilter='equipment';renderMarketplace()">🧰 Matériel</button>
+    </div>
+  </div>
+  <div id="marketplaceList"></div>
+</section>
+
+<div class="modal" id="marketModal">
+  <div class="box">
+    <h2>➕ Publier une annonce</h2>
+    <form id="marketForm">
+      <div class="formgrid">
+        <div><label>Catégorie</label>
+          <select id="marketType">
+            <option value="birds">🐔 Poulets</option>
+            <option value="chicks">🐣 Poussins</option>
+            <option value="feed">🌾 Aliments</option>
+            <option value="equipment">🧰 Matériel</option>
           </select>
-
-          <button onclick="calculerRation()">Estimer le besoin (kg)</button>
-          <div id="resultRation" class="result-display" style="display:none;"></div>
         </div>
-
-        <!-- Calculateur 2 : Capacité du Poulailler -->
-        <div class="calc-box">
-          <h4>Capacité d'Accueil (Densité)</h4>
-          <label for="surface">Surface disponible (m²) :</label>
-          <input type="number" id="surface" placeholder="Ex: 25" min="1">
-
-          <label for="typeStade">Stade d'élevage :</label>
-          <select id="typeStade">
-            <option value="30">Poussinière (0 à 4 sem. : ~30/m²)</option>
-            <option value="10">Croissance (5 à 12 sem. : ~10/m²)</option>
-            <option value="6">Adulte / Finition (~6/m²)</option>
-          </select>
-
-          <button onclick="calculerDensite()">Calculer la capacité max</button>
-          <div id="resultDensite" class="result-display" style="display:none;"></div>
-        </div>
-
+        <div><label>Titre de l'annonce</label><input id="marketTitle" required></div>
+        <div><label>Prix (F CFA)</label><input id="marketPrice" type="number" min="0" required></div>
+        <div><label>Quantité</label><input id="marketQty" type="number" min="1" value="1" required></div>
+        <div><label>Unité</label><input id="marketUnit" value="unité"></div>
+        <div><label>Localisation</label><input id="marketLocation" placeholder="Ville / commune"></div>
+        <div><label>Téléphone / WhatsApp</label><input id="marketPhone"></div>
       </div>
-    </div>
+      <label>Description</label><textarea id="marketDesc" placeholder="Détails du produit, disponibilité, conditions..."></textarea>
+      <div class="formactions">
+        <button type="button" class="secondary" onclick="closeMarketModal()">Annuler</button>
+        <button class="primary">📢 Publier</button>
+      </div>
+    </form>
+  </div>
+</div>
 
-    <!-- 2. GUIDES ET FICHES TECHNIQUES -->
-    <div class="help-card">
-      <h3>💡 Guide de Conduite d'Élevage Goliath</h3>
-      <ul class="advice-list">
-        <li><strong>Préparation du bâtiment :</strong> Videz et désinfectez le poulailler au moins 14 jours avant l'arrivée du nouveau lot. Déroulez une litière sèche de copaux de bois d'au moins 5 à 7 cm.</li>
-        <li><strong>Chauffage en Poussinière :</strong> Allumez le système de chauffage 24h avant l'arrivée des poussins. Température recommandée : 35°C la 1ère semaine, puis baisse de 3°C par semaine jusqu'à 25°C.</li>
-        <li><strong>Hydratation et Démarrage :</strong> Donnez de l'eau sucrée ou un complexe d'antistress à la réception des poussins avant de distribuer la nourriture.</li>
-        <li><strong>Lumière :</strong> Assurez 23h d'éclairage les 3 premiers jours pour permettre aux poussins d'identifier facilement l'eau et les mangeoires.</li>
-      </ul>
-    </div>
+<section id="ecosysteme" class="page">
+  <h2>🚀 Écosystème GOLIATH</h2>
+  <div class="eco-grid">
+    <div class="eco-card"><div class="muted">Annonces</div><div class="eco-number" id="ecoListings">0</div></div>
+    <div class="eco-card"><div class="muted">Commandes</div><div class="eco-number" id="ecoOrders">0</div></div>
+    <div class="eco-card"><div class="muted">Favoris</div><div class="eco-number" id="ecoFavs">0</div></div>
+  </div>
+  <div class="card"><h3>🛒 Mes commandes</h3><div id="ecoOrdersList"><p class="intel-muted">Aucune commande.</p></div></div>
+  <div class="card"><h3>⭐ Mes favoris</h3><div id="ecoFavList"><p class="intel-muted">Aucun favori.</p></div></div>
+  <div class="card">
+    <h3>🌍 Modules prévus</h3>
+    <span class="eco-pill">👥 Acheteurs</span><span class="eco-pill">🌾 Fournisseurs</span>
+    <span class="eco-pill">🩺 Techniciens</span><span class="eco-pill">🚚 Livraison</span>
+    <span class="eco-pill">💳 Paiement sécurisé</span><span class="eco-pill">💰 Crédit agricole</span>
+    <span class="eco-pill">💬 WhatsApp</span>
+  </div>
+</section>
 
-    <!-- 3. PROGRAMME SANITAIRE INDICATIF -->
-    <div class="help-card">
-      <h3>💉 Calendrier Vaccinal de Principe</h3>
-      <div class="help-table-wrapper">
-        <table class="help-table">
-          <thead>
-            <tr>
-              <th>Âge</th>
-              <th>Maladie visée / Traitement</th>
-              <th>Mode d'administration</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Jour 1</td>
-              <td>Newcastle (HB1) + Marek</td>
-              <td>Goutte oculaire / Trempage de bec</td>
-            </tr>
-            <tr>
-              <td>Jour 7</td>
-              <td>Gumboro (1ère dose)</td>
-              <td>Eau de boisson (avec antistress)</td>
-            </tr>
-            <tr>
-              <td>Jour 14</td>
-              <td>Gumboro (Rappel)</td>
-              <td>Eau de boisson</td>
-            </tr>
-            <tr>
-              <td>Jour 21</td>
-              <td>Newcastle (Lasota)</td>
-              <td>Eau de boisson</td>
-            </tr>
-            <tr>
-              <td>Semaine 4</td>
-              <td>Prévention Coccidiose</td>
-              <td>Eau de boisson (3 jours)</td>
-            </tr>
-            <tr>
-              <td>Semaine 6</td>
-              <td>Variole Aviaire</td>
-              <td>Transfixion à la membrane de l'aile</td>
-            </tr>
-          </tbody>
-        </table>
+<section id="cloud" class="page">
+  <h2>☁️ Compte Cloud</h2>
+  <div id="cloudAuthCard" class="cloud-card cloud-off">
+    <div class="muted">État du compte</div>
+    <div id="cloudUser" class="cloud-user">Mode local</div>
+    <p id="cloudAuthText">Aucun projet Firebase configuré.</p>
+    <div id="cloudSyncStatus" class="cloud-small">Synchronisation Firestore : en attente.</div>
+  </div>
+  <div class="cloud-grid">
+    <div class="cloud-card">
+      <h3>🔐 Connexion</h3>
+      <form id="cloudAuthForm">
+        <label>Email</label><input id="cloudEmail" type="email" required>
+        <label>Mot de passe</label><input id="cloudPassword" type="password" minlength="6" required>
+        <div class="formactions">
+          <button class="primary">🔑 Se connecter</button>
+          <button type="button" class="secondary" onclick="cloudRegister()">➕ Créer un compte</button>
+        </div>
+      </form>
+      <div class="actions">
+        <button class="secondary" onclick="cloudLogout()">🚪 Déconnexion</button>
+        <button class="secondary" onclick="syncCloudData()">☁️ Synchroniser maintenant</button>
+      </div>
+      <p id="cloudMessage" class="muted"></p>
+    </div>
+    <div class="cloud-card">
+      <h3>⚙️ Configuration</h3>
+      <p>La version actuelle est prête pour Firebase Authentication et Firestore.</p>
+      <button class="secondary" onclick="showFirebaseSetup()">Afficher les instructions Firebase</button>
+      <div id="firebaseSetup" style="display:none;margin-top:10px" class="notice">
+        1. Crée un projet Firebase.<br>
+        2. Active Authentication → Email/Password.<br>
+        3. Crée Firestore Database.<br>
+        4. Copie la configuration Web du projet dans <b>GOLIATH_FIREBASE_CONFIG</b> du fichier.<br>
+        5. Publie le fichier sur GitHub Pages puis teste la connexion et les règles Firestore.
       </div>
     </div>
   </div>
@@ -216,16 +387,88 @@
 <section id="profile" class="page"><h2>👤 Profil</h2><div class="card"><form id="profileForm"><div class="formgrid"><div><label>Nom</label><input id="name"></div><div><label>Téléphone</label><input id="phone"></div><div><label>Localisation</label><input id="loc"></div><div><label>Type d'éleveur</label><select id="ptype"><option>Éleveur débutant</option><option>Éleveur expérimenté</option><option>Producteur professionnel</option></select></div></div><div class="formactions"><button class="primary">💾 Enregistrer</button></div></form></div><div class="card"><button class="secondary" onclick="exportCSV()">📥 Exporter les relevés CSV</button> <button class="danger" onclick="resetAll()">🗑️ Effacer les données</button></div></section>
 </main>
 
+
+<section id="calculator" class="page">
+  <h2>🧮 Calculateur Goliath</h2>
+  <p>Renseigne simplement <b>le nombre de sujets</b> et <b>l'âge</b>. Le logiciel calcule automatiquement les besoins du lot.</p>
+
+  <div class="calc-card calc-main-card">
+    <h3>🐔 Informations du lot</h3>
+    <div class="formgrid">
+      <div>
+        <label>Nombre de sujets</label>
+        <input id="calcBirds" type="number" min="1" step="1" value="100" oninput="calculateGoliath()">
+      </div>
+      <div>
+        <label>Âge des sujets (semaines)</label>
+        <input id="calcAge" type="number" min="1" max="52" step="1" value="6" oninput="calculateGoliath()">
+      </div>
+    </div>
+    <div id="calcAgeInfo" class="calc-note"></div>
+  </div>
+
+  <div class="calc-grid">
+    <div class="calc-card">
+      <h3>🌾 Quantité d'aliment</h3>
+      <div class="calc-highlight">
+        <span>Pour 1 sujet / jour</span>
+        <strong id="feedPerBird">—</strong>
+      </div>
+      <div class="calc-highlight">
+        <span>Pour tout le lot / jour</span>
+        <strong id="feedPerLot">—</strong>
+      </div>
+      <div class="calc-result-row">
+        <span>Besoin pour 7 jours</span><strong id="feedWeek">—</strong>
+      </div>
+      <div class="calc-result-row">
+        <span>Besoin pour 30 jours</span><strong id="feedMonth">—</strong>
+      </div>
+      <div class="calc-result-row">
+        <span>Sacs de 25 kg / 7 jours</span><strong id="feedBagsWeek">—</strong>
+      </div>
+      <p class="calc-note">Repère de rationnement indicatif, modifiable dans le code si ta fiche d'aliment ou tes données d'élevage donnent une autre valeur.</p>
+    </div>
+
+    <div class="calc-card">
+      <h3>🏠 Superficie nécessaire</h3>
+      <div class="calc-highlight">
+        <span>Densité de référence</span>
+        <strong id="areaDensity">—</strong>
+      </div>
+      <div class="calc-highlight">
+        <span>Surface nécessaire pour le lot</span>
+        <strong id="areaTotal">—</strong>
+      </div>
+      <div class="calc-result-row">
+        <span>Exemple de dimensions</span><strong id="areaDimensions">—</strong>
+      </div>
+      <p class="calc-note">Le calcul utilise un repère prudent de densité au sol selon l'âge. La ventilation, la chaleur, le bâtiment et le mode d'élevage doivent aussi être pris en compte.</p>
+    </div>
+  </div>
+
+  <div class="calc-card" style="margin-top:14px">
+    <h3>📋 Repères utilisés</h3>
+    <table class="calc-table">
+      <thead><tr><th>Âge</th><th>Aliment / sujet / jour</th><th>Densité Goliath</th></tr></thead>
+      <tbody>
+        <tr><td>1 semaine</td><td>15 g</td><td>50 sujets/m²</td></tr>
+        <tr><td>2–4 semaines</td><td>20 à 30 g</td><td>30–40 sujets/m² → calcul à 30</td></tr>
+        <tr><td>5–8 semaines</td><td>35 à 50 g</td><td>20–25 sujets/m² → calcul à 20</td></tr>
+        <tr><td>9–12 semaines</td><td>55 à 70 g</td><td>15–20 sujets/m² → calcul à 15</td></tr>
+        <tr><td>13–16 semaines</td><td>75 à 90 g</td><td>10–15 sujets/m² → calcul à 10</td></tr>
+        <tr><td>17–20 semaines</td><td>95 à 110 g</td><td>8–10 sujets/m² → calcul à 8</td></tr>
+        <tr><td>21–24 semaines</td><td>115 à 130 g</td><td>6–8 sujets/m² → calcul à 6</td></tr>
+        <tr><td>25+ semaines</td><td>130 g*</td><td>4–6 sujets/m² → calcul à 4</td></tr>
+      </tbody>
+    </table>
+    <p class="calc-note">Pour la densité, la norme de travail retenue dans ce calculateur est : 50 sujets/m² à 1 semaine, puis 30–40 à 2–4 semaines. Pour les âges suivants, des fourchettes progressives sont utilisées et le calcul de surface prend volontairement la borne basse de chaque fourchette pour éviter de surcharger le bâtiment.</p>
+    <p class="calc-note">*Le rationnement reste un repère indicatif : la consommation réelle dépend notamment de l'aliment, du poids, du climat et de la conduite du lot. La densité doit aussi être adaptée à la ventilation, à la chaleur, à la litière et au confort des oiseaux.</p>
+  </div>
+</section>
 <div class="modal" id="lotModal"><div class="box"><h2>➕ Créer un lot Goliath</h2><form id="lotForm"><div class="formgrid"><div><label>Nom du lot</label><input id="lname" required></div><div><label>Effectif initial</label><input id="lcount" type="number" min="1" value="100" required></div><div><label>Date de mise en place</label><input id="ldate" type="date" required></div><div><label>Prix / poussin (F)</label><input id="lprice" type="number" min="0" value="700" required></div><div><label>Objectif poids final (kg)</label><input id="target" type="number" step=".01" min="0" value="2.5"></div><div><label>Âge objectif (jours)</label><input id="targetAge" type="number" min="1" value="90"></div></div><label>Fournisseur</label><input id="supplier"><div class="formactions"><button type="button" class="secondary" onclick="closeM('lotModal')">Annuler</button><button class="primary">Créer le lot</button></div></form></div></div>
 
 <div class="modal" id="recordModal"><div class="box"><h2>📝 Ajouter un relevé</h2><form id="recordForm"><label>Lot</label><select id="rlot"></select><div class="formgrid"><div><label>Date</label><input id="rdate" type="date" required></div><div><label>Effectif début</label><input id="rstart" type="number" min="0" required></div><div><label>Morts</label><input id="rdeath" type="number" min="0" value="0"></div><div><label>Vendus / retirés</label><input id="rsold" type="number" min="0" value="0"></div><div><label>Nombre pesé</label><input id="rweighed" type="number" min="1" value="10"></div><div><label>Poids total pesé (kg)</label><input id="rtotalweight" type="number" min="0" step=".01" required></div><div><label>Aliment consommé (kg)</label><input id="rfeed" type="number" min="0" step=".1" value="0"></div><div><label>Coût aliment (F)</label><input id="rcfeed" type="number" min="0" value="0"></div><div><label>Santé / vaccins (F)</label><input id="rchealth" type="number" min="0" value="0"></div><div><label>Main-d'œuvre (F)</label><input id="rclabor" type="number" min="0" value="0"></div><div><label>Autres coûts (F)</label><input id="rcother" type="number" min="0" value="0"></div></div><label>Observations</label><textarea id="robs"></textarea><div class="formactions"><button type="button" class="secondary" onclick="closeM('recordModal')">Annuler</button><button class="primary">💾 Enregistrer</button></div></form></div></div>
-
-<!-- BOUTON WHATSAPP FLOTTANT -->
-<a href="https://wa.me/2290155734801?text=Bonjour,%20j'ai%20une%20question%20sur%20la%20gestion%20de%20mon%20élevage" 
-   class="whatsapp-btn" 
-   target="_blank">
-  💬 Support WhatsApp
-</a>
 
 <script>
 const KEY='GOLIATH_MANAGER_V5_DATA';
@@ -274,44 +517,456 @@ function profit(){let l=lot();if(!l){$('pcost').textContent='0 F';$('prev').text
 function exportCSV(){let a=[['Date','Lot','Age jours','Début','Morts','Vendus','Vivants','Poids moyen kg','Aliment kg','Coût F CFA','Observations']];db.lots.forEach(l=>l.records.forEach(r=>a.push([r.date,l.name,age(l,r.date),r.start,r.deaths,r.sold,r.start-r.deaths-r.sold,r.avg.toFixed(2),r.feed,r.cost,r.obs])));let csv=a.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(';')).join('\n'),b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a1=document.createElement('a');a1.href=URL.createObjectURL(b);a1.download='goliath_manager_v5_releves.csv';a1.click()}
 function resetAll(){if(confirm('Effacer toutes les données ?')){localStorage.removeItem(KEY);location.reload()}}
 
-/* FONCTIONS DES CALCULATEURS ÉLEVEURS */
-function calculerRation() {
-  const effectif = parseFloat(document.getElementById('effectif').value);
-  const grammage = parseFloat(document.getElementById('ageSemaine').value);
-  const resultDiv = document.getElementById('resultRation');
+/* V6 ADDITION - STOCK, ACHATS, CONSOMMATION */
+if(!db.stock) db.stock=[];
+if(!db.purchases) db.purchases=[];
+if(!db.consumptions) db.consumptions=[];
 
-  if (!effectif || effectif <= 0) {
-    resultDiv.style.display = 'block';
-    resultDiv.style.color = '#c0392b';
-    resultDiv.innerHTML = "Saisissez un effectif d'oiseaux valide.";
-    return;
-  }
-
-  const totalKg = (effectif * grammage) / 1000;
-  resultDiv.style.display = 'block';
-  resultDiv.style.color = '#117a65';
-  resultDiv.innerHTML = `Besoin estimé : <strong>${totalKg.toFixed(2)} kg</strong> / jour.`;
+function stockItem(name){return db.stock.find(x=>x.name===name)}
+function stockPrice(name){let x=stockItem(name);return x&&x.qty>0?x.value/x.qty:0}
+function ensureStock(name,threshold){
+ let x=stockItem(name);
+ if(!x){x={name,qty:0,value:0,threshold:+threshold||0};db.stock.push(x)}
+ if(threshold!==undefined)x.threshold=+threshold||0;
+ return x;
 }
-
-function calculerDensite() {
-  const surface = parseFloat(document.getElementById('surface').value);
-  const ratio = parseFloat(document.getElementById('typeStade').value);
-  const resultDiv = document.getElementById('resultDensite');
-
-  if (!surface || surface <= 0) {
-    resultDiv.style.display = 'block';
-    resultDiv.style.color = '#c0392b';
-    resultDiv.innerHTML = "Saisissez une surface valide.";
-    return;
-  }
-
-  const capaciteMax = Math.floor(surface * ratio);
-  resultDiv.style.display = 'block';
-  resultDiv.style.color = '#117a65';
-  resultDiv.innerHTML = `Capacité max recommandée : <strong>${capaciteMax} sujets</strong>.`;
+function openPurchase(){
+ $('pdate').value=today;$('pqty').value='';$('ptotal').value='';$('pthreshold').value=25;$('psupplier').value='';
+ $('purchaseModal').classList.add('show');
 }
+function openConsumption(){
+ if(!db.lots.length){alert('Créez d’abord un lot.');return}
+ $('clot').innerHTML=db.lots.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');
+ $('clot').value=(lot()||db.lots[0]).id;$('cdate').value=today;
+ let names=[...new Set(db.stock.map(x=>x.name))];
+ $('cfeed').innerHTML=names.length?names.map(n=>`<option>${n}</option>`).join(''):'<option value="">Aucun aliment en stock</option>';
+ $('consumptionModal').classList.add('show');
+}
+$('purchaseForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ let name=$('pfeed').value,qty=+$('pqty').value,total=+$('ptotal').value,threshold=+$('pthreshold').value||0;
+ if(qty<=0||total<0){alert('Vérifiez la quantité et le prix.');return}
+ let s=ensureStock(name,threshold);s.qty+=qty;s.value+=total;s.threshold=threshold;
+ db.purchases.push({date:$('pdate').value,name,qty,total,priceKg:total/qty,supplier:$('psupplier').value});
+ save();closeM('purchaseModal');$('purchaseForm').reset();$('pdate').value=today;
+});
+$('consumptionForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ let l=db.lots.find(x=>x.id==+$('clot').value),name=$('cfeed').value,qty=+$('cqty').value,s=stockItem(name);
+ if(!l||!s||qty<=0){alert('Vérifiez le lot, l’aliment et la quantité.');return}
+ if(s.qty<qty){alert('Stock insuffisant : '+s.qty.toFixed(1)+' kg disponibles.');return}
+ let unit=stockPrice(name),cost=qty*unit;
+ s.qty-=qty;s.value=Math.max(0,s.value-cost);l.feed+=qty;l.expenses+=cost;
+ db.consumptions.push({date:$('cdate').value,lotId:l.id,lotName:l.name,name,qty,cost,priceKg:unit,birds:l.current,costPerBird:l.current?cost/l.current:0});
+ save();closeM('consumptionModal');$('consumptionForm').reset();$('cdate').value=today;
+});
+function renderStock(){
+ let kg=db.stock.reduce((a,x)=>a+x.qty,0),val=db.stock.reduce((a,x)=>a+x.value,0),alerts=db.stock.filter(x=>x.qty<=x.threshold).length;
+ if($('stockTotalKg'))$('stockTotalKg').textContent=kg.toFixed(1)+' kg';
+ if($('stockValue'))$('stockValue').textContent=money(val);
+ if($('stockAlerts'))$('stockAlerts').textContent=alerts;
+ if($('stockList'))$('stockList').innerHTML=db.stock.length?db.stock.map(x=>{
+  let low=x.qty<=x.threshold;
+  return `<div class="item ${low?'stock-low':'stock-ok'}"><div><b>🌾 ${x.name}</b><div class="muted">${x.qty.toFixed(1)} kg · Prix moyen ${money(stockPrice(x.name))}/kg · Seuil ${x.threshold.toFixed(1)} kg</div></div><span class="badge ${low?'red':''}">${low?'⚠️ STOCK BAS':'✓ STOCK OK'}</span></div>`;
+ }).join(''):'<div class="card">Aucun aliment enregistré. Ajoutez votre premier achat.</div>';
+ if($('purchaseBody'))$('purchaseBody').innerHTML=db.purchases.length?db.purchases.slice().reverse().map(x=>`<tr><td>${x.date}</td><td>${x.name}</td><td>${x.qty.toFixed(1)} kg</td><td>${money(x.total)}</td><td>${money(x.priceKg)}</td><td>${x.supplier||'—'}</td></tr>`).join(''):'<tr><td colspan="6">Aucun achat.</td></tr>';
+ if($('consumptionBody'))$('consumptionBody').innerHTML=db.consumptions.length?db.consumptions.slice().reverse().map(x=>`<tr><td>${x.date}</td><td>${x.lotName}</td><td>${x.name}</td><td>${x.qty.toFixed(1)}</td><td>${money(x.cost)}</td><td>${money(x.costPerBird)}</td></tr>`).join(''):'<tr><td colspan="6">Aucune consommation.</td></tr>';
+}
+const renderV5=render;
+render=function(){renderV5();renderStock()};
 
 render();
+
+/* ===== V7 : MOTEUR D'ANALYSE INTELLIGENT ===== */
+function num(v){ return Number(v)||0; }
+
+function intelData(){
+  const lots = Array.isArray(db.lots) ? db.lots : [];
+  const stock = Array.isArray(db.stock) ? db.stock : [];
+  const cons = Array.isArray(db.consumptions) ? db.consumptions : [];
+
+  let live=0, initial=0, deaths=0, feedUsed=0, expenses=0, revenue=0, weightSum=0, weightN=0;
+  lots.forEach(l=>{
+    initial += num(l.initial);
+    live += num(l.current);
+    deaths += num(l.deaths);
+    expenses += num(l.expenses);
+    l.records = Array.isArray(l.records) ? l.records : [];
+    l.records.forEach(r=>{
+      feedUsed += num(r.feed);
+      if(num(r.avg)>0){ weightSum += num(r.avg); weightN++; }
+      deaths += num(r.deaths);
+      revenue += num(r.sold) * num(l.price);
+    });
+  });
+
+  // V6 stock consumption is also considered if daily records did not contain feed quantities.
+  if(feedUsed<=0) cons.forEach(c=> feedUsed += num(c.qty));
+
+  const mortality = initial>0 ? (deaths/initial)*100 : 0;
+  const avgWeight = weightN>0 ? weightSum/weightN : 0;
+  const totalStock = stock.reduce((s,x)=>s+num(x.qty),0);
+  const stockValue = stock.reduce((s,x)=>s+num(x.value),0);
+
+  return {lots, live, initial, deaths, feedUsed, expenses, revenue, mortality, avgWeight, totalStock, stockValue};
+}
+
+function intelScore(d){
+  if(!d.initial) return null;
+  let score=50;
+  if(d.mortality<=3) score+=20;
+  else if(d.mortality<=5) score+=10;
+  else if(d.mortality>8) score-=20;
+  else score-=10;
+
+  if(d.avgWeight>0) score+=15;
+  if(d.feedUsed>0) score+=10;
+  if(d.totalStock>0) score+=5;
+
+  return Math.max(0,Math.min(100,Math.round(score)));
+}
+
+function renderIntelligence(){
+  if(!$('intelligence')) return;
+  const d=intelData();
+  const score=intelScore(d);
+
+  let status='⚪ DONNÉES INSUFFISANTES', cls='intel-warn', reason='Ajoute des relevés de poids, mortalité et aliment pour obtenir une analyse plus précise.';
+  if(score!==null){
+    if(score>=75){status='🟢 ÉLEVAGE : BON ÉTAT'; cls='intel-good'; reason='Les indicateurs actuellement enregistrés sont globalement favorables.';}
+    else if(score>=50){status='🟠 ÉLEVAGE : À SURVEILLER'; cls='intel-warn'; reason='Certains indicateurs méritent une vérification régulière.';}
+    else {status='🔴 ÉLEVAGE : ATTENTION'; cls='intel-danger'; reason='Plusieurs signaux enregistrés nécessitent une vérification sur le terrain.';}
+  }
+  $('intelStatus').className='intel-status '+cls;
+  $('intelStatus').innerHTML='<strong>'+status+'</strong><br><span class="intel-muted">'+reason+'</span>';
+
+  $('intelCards').innerHTML =
+    '<div class="intel-card"><h3>⭐ Score</h3><div class="intel-big">'+(score===null?'—':score+'/100')+'</div><div class="intel-muted">indicateur prototype</div></div>'+
+    '<div class="intel-card"><h3>🐔 Poulets vivants</h3><div class="intel-big">'+d.live+'</div><div class="intel-muted">sur '+d.initial+' au départ</div></div>'+
+    '<div class="intel-card"><h3>📉 Mortalité</h3><div class="intel-big">'+d.mortality.toFixed(1)+'%</div><div class="intel-muted">'+d.deaths+' décès enregistrés</div></div>'+
+    '<div class="intel-card"><h3>🌾 Stock</h3><div class="intel-big">'+d.totalStock.toFixed(1)+' kg</div><div class="intel-muted">≈ '+money(d.stockValue)+'</div></div>';
+
+  let lotHtml='';
+  d.lots.forEach(l=>{
+    const init=num(l.initial), cur=num(l.current), mort=init>0?((init-cur)/init*100):0;
+    const recs=Array.isArray(l.records)?l.records:[];
+    const last=recs.length?recs[recs.length-1]:null;
+    const w=last?num(last.avg):0;
+    const target=num(l.target);
+    const gap=(w>0 && target>0)?((w/target)*100):null;
+    lotHtml += '<div class="intel-action"><strong>🐔 '+(l.name||'Lot')+'</strong> — '+cur+' vivants'+
+      '<br><span class="intel-muted">Mortalité estimée: '+mort.toFixed(1)+'%'+
+      (w>0?' · Dernier poids moyen: '+w.toFixed(2)+' kg':'')+
+      (gap!==null?' · '+gap.toFixed(0)+'% de l’objectif enregistré':'')+
+      '</span></div>';
+  });
+  $('intelLots').innerHTML=lotHtml || '<p>Aucun lot enregistré pour le moment.</p>';
+
+  let actions=[];
+  if(!d.initial) actions.push('Ajoute au moins un lot pour démarrer l’analyse.');
+  if(d.mortality>5) actions.push('Vérifie rapidement les conditions d’élevage et les relevés de mortalité : la mortalité cumulée enregistrée dépasse 5%.');
+  if(d.avgWeight<=0) actions.push('Effectue un relevé de poids : il permettra de comparer la croissance à l’objectif du lot.');
+  if(d.feedUsed<=0) actions.push('Enregistre la consommation d’aliment pour calculer les indicateurs de coût et d’efficacité.');
+  if(d.totalStock<=0) actions.push('Enregistre tes achats d’aliment pour suivre le stock et anticiper les ruptures.');
+  if(!actions.length) actions.push('Continue les relevés régulièrement : plus les données sont complètes, plus l’analyse sera utile.');
+  $('intelActions').innerHTML=actions.map(x=>'<div class="intel-action">💡 '+x+'</div>').join('');
+
+  let forecast='<div class="intel-action">🐔 Poulets actuellement enregistrés : <strong>'+d.live+'</strong></div>';
+  if(d.avgWeight>0) forecast+='<div class="intel-action">⚖️ Dernier poids moyen disponible : <strong>'+d.avgWeight.toFixed(2)+' kg</strong></div>';
+  if(d.totalStock>0 && d.feedUsed>0){
+    // This is deliberately a simple stock-days estimate, not a fixed breed target.
+    const days=d.feedUsed>0 ? Math.max(1,Math.round(d.totalStock/(d.feedUsed/30))) : 0;
+    forecast+='<div class="intel-action">🌾 Autonomie théorique du stock : <strong>≈ '+days+' jours</strong><br><span class="intel-muted">Estimation basée sur la consommation totale enregistrée, ramenée à 30 jours.</span></div>';
+  }
+  if(d.revenue>0 || d.expenses>0){
+    const margin=d.revenue-d.expenses;
+    forecast+='<div class="intel-action">💰 Marge enregistrée : <strong>'+money(margin)+'</strong><br><span class="intel-muted">Recettes enregistrées − dépenses enregistrées.</span></div>';
+  }
+  $('intelForecast').innerHTML=forecast;
+}
+
+const renderV7Base = render;
+render = function(){
+  renderV7Base();
+  renderIntelligence();
+};
+
+
+/* ===== V8 : MARKETPLACE LOCALE ===== */
+if(!Array.isArray(db.market)) db.market=[];
+let marketFilter='all';
+
+function openMarketModal(){
+  if($('marketModal')) $('marketModal').style.display='flex';
+}
+function closeMarketModal(){
+  if($('marketModal')) $('marketModal').style.display='none';
+}
+function marketLabel(t){
+  return ({birds:'🐔 Poulets',chicks:'🐣 Poussins',feed:'🌾 Aliments',equipment:'🧰 Matériel'})[t]||'Produit';
+}
+function renderMarketplace(){
+  if(!$('marketplaceList')) return;
+  const arr=(db.market||[]).filter(x=>marketFilter==='all'||x.type===marketFilter);
+  if(!arr.length){
+    $('marketplaceList').innerHTML='<div class="market-empty">Aucune annonce dans cette catégorie.<br><span class="intel-muted">Publie la première annonce.</span></div>';
+    return;
+  }
+  $('marketplaceList').innerHTML='<div class="market-grid">'+arr.map(x=>{
+    const wa=(x.phone||'').replace(/\D/g,'');
+    const contact=wa ? '<button onclick="marketContact(\''+wa+'\')">💬 Contacter</button>' : '';
+    return '<div class="market-card">'+
+      '<span class="market-tag">'+marketLabel(x.type)+'</span>'+
+      '<h3>'+escapeHTML(x.title)+'</h3>'+
+      '<div class="market-price">'+money(num(x.price))+'</div>'+
+      '<div>📦 '+num(x.qty)+' '+escapeHTML(x.unit||'unité')+'</div>'+
+      '<div>📍 '+escapeHTML(x.location||'Non précisé')+'</div>'+
+      '<p class="intel-muted">'+escapeHTML(x.desc||'')+'</p>'+
+      '<div class="market-actions">'+contact+
+      '<button onclick="marketFavorite(\''+x.id+'\')">⭐ Favori</button>'+
+      '<button onclick="marketOrder(\''+x.id+'\')">🛒 Commander</button>'+
+      '<button onclick="deleteMarket(\''+x.id+'\')">🗑️</button></div>'+
+      '</div>';
+  }).join('')+'</div>';
+}
+function escapeHTML(s){
+  return String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
+}
+function marketContact(phone){
+  if(confirm('Ouvrir WhatsApp pour contacter le vendeur ?')) window.open('https://wa.me/'+phone,'_blank');
+}
+function deleteMarket(id){
+  if(confirm('Supprimer cette annonce ?')){
+    db.market=db.market.filter(x=>x.id!==id);
+    save(); renderMarketplace();
+  }
+}
+if($('marketForm')){
+  $('marketForm').onsubmit=function(e){
+    e.preventDefault();
+    db.market.push({
+      id:'m'+Date.now(),
+      type:$('marketType').value,
+      title:$('marketTitle').value.trim(),
+      price:num($('marketPrice').value),
+      qty:num($('marketQty').value),
+      unit:$('marketUnit').value.trim(),
+      location:$('marketLocation').value.trim(),
+      phone:$('marketPhone').value.trim(),
+      desc:$('marketDesc').value.trim(),
+      date:new Date().toISOString().slice(0,10)
+    });
+    save(); closeMarketModal(); this.reset(); renderMarketplace();
+  };
+}
+
+
+
+/* ===== V9 : COMMANDES / FAVORIS / STRUCTURE MULTI-UTILISATEUR ===== */
+if(!Array.isArray(db.orders)) db.orders=[];
+if(!Array.isArray(db.favorites)) db.favorites=[];
+
+function marketFavorite(id){
+  if(!db.favorites.includes(id)) db.favorites.push(id);
+  else db.favorites=db.favorites.filter(x=>x!==id);
+  save(); renderMarketplace(); renderEcosystem();
+}
+function marketOrder(id){
+  const p=(db.market||[]).find(x=>x.id===id);
+  if(!p) return;
+  const qty=Number(prompt('Quantité à commander (maximum '+num(p.qty)+'):', '1'));
+  if(!qty || qty<1 || qty>num(p.qty)) return alert('Quantité invalide.');
+  db.orders.push({
+    id:'o'+Date.now(), listingId:p.id, title:p.title, qty:qty,
+    unit:p.unit||'unité', unitPrice:num(p.price), total:qty*num(p.price),
+    sellerPhone:p.phone||'', location:p.location||'', status:'Demande envoyée',
+    date:new Date().toISOString().slice(0,10)
+  });
+  save(); renderEcosystem();
+  alert('Demande de commande enregistrée. Dans la version cloud, elle pourra être transmise au vendeur en temps réel.');
+}
+function renderEcosystem(){
+  if(!$('ecosysteme')) return;
+  $('ecoListings').textContent=(db.market||[]).length;
+  $('ecoOrders').textContent=(db.orders||[]).length;
+  $('ecoFavs').textContent=(db.favorites||[]).length;
+
+  const orders=db.orders||[];
+  $('ecoOrdersList').innerHTML=orders.length ? orders.map(o=>
+    '<div class="order-card"><strong>'+escapeHTML(o.title)+'</strong><br>'+
+    '📦 '+o.qty+' '+escapeHTML(o.unit)+' · 💰 '+money(o.total)+
+    '<br>📍 '+escapeHTML(o.location||'Non précisé')+
+    '<br><span class="order-status">⏳ '+escapeHTML(o.status)+'</span>'+
+    '<br><span class="intel-muted">'+escapeHTML(o.date)+'</span></div>'
+  ).join('') : '<p class="intel-muted">Aucune commande.</p>';
+
+  const favs=(db.market||[]).filter(x=>(db.favorites||[]).includes(x.id));
+  $('ecoFavList').innerHTML=favs.length ? favs.map(x=>
+    '<div class="order-card"><strong>'+escapeHTML(x.title)+'</strong> — '+money(num(x.price))+
+    '<br><span class="intel-muted">'+escapeHTML(x.location||'Non précisé')+'</span></div>'
+  ).join('') : '<p class="intel-muted">Aucun favori.</p>';
+}
+
+
+
+
+/* ===== V10 : INTERFACE COMPTE CLOUD ===== */
+
+async function syncCloudData(){
+ if(!window.goliathCloud?.user) return alert("Connecte-toi à ton compte Cloud avant de synchroniser.");
+ try{ const uid=window.goliathCloud.user.uid; const ref=window.goliathCloud.doc(window.goliathCloud.firestore,"userData",uid); await window.goliathCloud.setDoc(ref,{profile:db.profile||{},lots:db.lots||[],stock:db.stock||[],purchases:db.purchases||[],consumptions:db.consumptions||[],favorites:db.favorites||[],orders:db.orders||[],updatedAt:new Date().toISOString()},{merge:true}); if($("cloudSyncStatus")) $("cloudSyncStatus").textContent="Synchronisé dans Firestore : "+new Date().toLocaleString("fr-FR"); }catch(e){ console.error(e); alert("Synchronisation Firestore échouée : "+e.message); }
+}
+async function loadCloudData(user){
+ if(!user || !window.goliathCloud?.firestore) return;
+ try{ const ref=window.goliathCloud.doc(window.goliathCloud.firestore,"userData",user.uid); const snap=await window.goliathCloud.getDoc(ref); if(snap.exists()){const d=snap.data(); if(d.profile)db.profile=d.profile; if(Array.isArray(d.lots))db.lots=d.lots; if(Array.isArray(d.stock))db.stock=d.stock; if(Array.isArray(d.purchases))db.purchases=d.purchases; if(Array.isArray(d.consumptions))db.consumptions=d.consumptions; if(Array.isArray(d.favorites))db.favorites=d.favorites; if(Array.isArray(d.orders))db.orders=d.orders; save(); render(); if($("cloudSyncStatus"))$("cloudSyncStatus").textContent="Données Cloud chargées.";} else await syncCloudData(); }catch(e){console.error(e); if($("cloudSyncStatus"))$("cloudSyncStatus").textContent="Erreur Firestore : "+e.message;}
+}
+function renderCloud(){
+  if(!$('cloud')) return;
+  const c=window.goliathCloud||{ready:false};
+  const user=c.user||null;
+  $('cloudUser').textContent = user ? (user.email||'Compte connecté') : (c.ready?'Non connecté':'Mode local');
+  $('cloudAuthText').textContent = user ? 'Compte Firebase connecté.' : (c.ready?'Connecte-toi ou crée un compte.':'Aucun projet Firebase configuré.');
+  $('cloudSyncStatus').textContent = user ? 'Connecté' : 'Locale';
+  $('cloudAuthCard').className='cloud-card '+(user?'cloud-ok':'cloud-off');
+}
+function cloudMessage(msg){ if($('cloudMessage')) $('cloudMessage').textContent=msg; }
+async function cloudRegister(){
+  const c=window.goliathCloud||{};
+  if(!c.ready) return cloudMessage('Firebase n’est pas encore configuré.');
+  const email=$('cloudEmail').value.trim(), pass=$('cloudPassword').value;
+  try{
+    await c.createUserWithEmailAndPassword(c.auth,email,pass);
+    cloudMessage('Compte créé et connecté.');
+  }catch(e){ cloudMessage('Impossible de créer le compte : '+(e.code||e.message)); }
+}
+async function cloudLogout(){
+  const c=window.goliathCloud||{};
+  if(!c.ready) return cloudMessage('Firebase n’est pas encore configuré.');
+  try{ await c.signOut(c.auth); cloudMessage('Déconnecté.'); }
+  catch(e){ cloudMessage('Erreur de déconnexion.'); }
+}
+if($('cloudAuthForm')){
+  $('cloudAuthForm').onsubmit=async function(e){
+    e.preventDefault();
+    const c=window.goliathCloud||{};
+    if(!c.ready) return cloudMessage('Firebase n’est pas encore configuré.');
+    try{
+      await c.signInWithEmailAndPassword(c.auth,$('cloudEmail').value.trim(),$('cloudPassword').value);
+      cloudMessage('Connexion réussie.');
+    }catch(err){ cloudMessage('Connexion impossible : '+(err.code||err.message)); }
+  };
+}
+function showFirebaseSetup(){
+  if($('firebaseSetup')) $('firebaseSetup').style.display=$('firebaseSetup').style.display==='none'?'block':'none';
+}
+const renderV10Base=render;
+render=function(){
+  renderV10Base();
+  renderIntelligence();
+  renderMarketplace();
+  renderEcosystem();
+  renderCloud();
+};
+
 </script>
+
+<!-- V10 Firebase SDK : configuration à renseigner avant activation -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword,
+    createUserWithEmailAndPassword, signOut
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+  // RENSEIGNER LES VALEURS DE TON PROJET FIREBASE ICI.
+  const GOLIATH_FIREBASE_CONFIG = null;
+
+  window.goliathCloud = { ready:false, auth:null, app:null };
+
+  if(GOLIATH_FIREBASE_CONFIG){
+    try{
+      const app = initializeApp(GOLIATH_FIREBASE_CONFIG);
+      const auth = getAuth(app);
+      window.goliathCloud = {ready:true, auth, app, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut};
+      onAuthStateChanged(auth, user=>{
+        window.goliathCloud.user=user||null;
+        if(typeof window.renderCloud==='function') window.renderCloud();
+      });
+    }catch(err){
+      console.error('Firebase:',err);
+      window.goliathCloud.error=err;
+    }
+  }
+
+// V13 — Calculateur Goliath
+function goliathFeedPerBird(age){
+  age=Math.max(1,Math.floor(Number(age)||1));
+  // Repère indicatif : 15 g à S1, puis +5 g/semaine, plafonné à 130 g dès S24.
+  return Math.min(130, 15 + (age-1)*5);
+}
+function goliathDensity(age){
+  age=Math.max(1,Math.floor(Number(age)||1));
+  // Norme de densité demandée pour Goliath.
+  // Pour les fourchettes, le calcul utilise la borne basse afin de rester prudent.
+  if(age===1) return 50;
+  if(age<=4) return 30;
+  if(age<=8) return 20;
+  if(age<=12) return 15;
+  if(age<=16) return 10;
+  if(age<=20) return 8;
+  if(age<=24) return 6;
+  return 4;
+}
+function goliathAgeBand(age){
+  age=Math.max(1,Math.floor(Number(age)||1));
+  if(age===1) return '1 semaine';
+  if(age<=4) return '2–4 semaines';
+  if(age<=8) return '5–8 semaines';
+  if(age<=12) return '9–12 semaines';
+  if(age<=16) return '13–16 semaines';
+  if(age<=20) return '17–20 semaines';
+  if(age<=24) return '21–24 semaines';
+  return '25 semaines et plus';
+}
+function calculateGoliath(){
+  const birds=Math.max(1,Math.floor(Number(document.getElementById('calcBirds')?.value)||1));
+  const age=Math.max(1,Math.floor(Number(document.getElementById('calcAge')?.value)||1));
+  const perBird=goliathFeedPerBird(age);
+  const perLotKg=birds*perBird/1000;
+  const weekKg=perLotKg*7;
+  const monthKg=perLotKg*30;
+  const bagsWeek=weekKg/25;
+  const density=goliathDensity(age);
+  const area=birds/density;
+  const width=Math.max(1,Math.sqrt(area));
+  const length=area/width;
+
+  const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
+  set('feedPerBird',perBird+' g');
+  set('feedPerLot',perLotKg.toFixed(2)+' kg');
+  set('feedWeek',weekKg.toFixed(2)+' kg');
+  set('feedMonth',monthKg.toFixed(2)+' kg');
+  set('feedBagsWeek',bagsWeek.toFixed(2)+' sacs');
+  set('areaDensity',density+' sujets/m²');
+  set('areaTotal',area.toFixed(2)+' m²');
+  set('areaDimensions',length.toFixed(2)+' m × '+width.toFixed(2)+' m');
+  set('calcAgeInfo','À '+age+' semaine(s), le repère utilisé est '+perBird+' g/sujet/jour et '+density+' sujets/m².');
+}
+function initCalculator(){
+  calculateGoliath();
+}
+document.addEventListener('DOMContentLoaded',initCalculator);
+</script>
+
+<section id="cloudRules" class="page"><div class="card"><h2>🔐 Règles Firestore</h2><p>À coller dans Firebase Console → Firestore Database → Règles.</p><textarea style="width:100%;min-height:500px;font-family:monospace" readonly>rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  match /users/{userId} { allow read, update, delete: if request.auth != null && request.auth.uid == userId; allow create: if request.auth != null && request.auth.uid == userId; }
+  match /userData/{userId} { allow read, write: if request.auth != null && request.auth.uid == userId; }
+  match /marketplace/{listingId} { allow read: if true; allow create: if request.auth != null && request.resource.data.ownerId == request.auth.uid; allow update, delete: if request.auth != null && resource.data.ownerId == request.auth.uid; }
+  match /orders/{orderId} { allow create: if request.auth != null && request.resource.data.buyerId == request.auth.uid; allow read: if request.auth != null && (resource.data.buyerId == request.auth.uid || resource.data.sellerId == request.auth.uid); allow update: if request.auth != null && (resource.data.buyerId == request.auth.uid || resource.data.sellerId == request.auth.uid); }
+  match /{document=**} { allow read, write: if false; }
+ }
+}</textarea><p><b>⚠️</b> Teste les règles avant la production.</p></div></section>
 </body>
 </html>
