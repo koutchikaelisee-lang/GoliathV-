@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Goliath Manager</title>
+<title>Goliath Manager V11 — Cloud Firestore</title>
 <style>
     .scroll-text {
   display: inline-block;
@@ -25,7 +25,7 @@
 :root{--g:#087f3e;--bg:#f3f7f4;--line:#dce6df;--text:#17301f;--muted:#68746d;--red:#b3261e;--orange:#a86500}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
 header{background:var(--g);color:white;padding:17px}header div{max-width:1100px;margin:auto}
-nav style="{display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
+nav{display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
 nav button{white-space:nowrap;border:0;border-radius:9px;padding:10px 12px;background:#fff;font-weight:bold}nav button.active{background:#087f3e;color:#fff}
 main{max-width:1100px;margin:auto;padding:15px}.page{display:none}.page.active{display:block}
 .card,.hero{background:#fff;border-radius:16px;padding:16px;margin:11px 0;box-shadow:0 3px 14px #0001}.hero{background:linear-gradient(135deg,#087f3e,#0c9b4d);color:#fff}
@@ -162,6 +162,13 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 .calc-result-row{display:flex;justify-content:space-between;gap:10px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:13px}
 .calc-result-row strong{font-weight:800}
 .calc-note{font-size:11px;color:var(--muted);line-height:1.45;margin:9px 0}
+/* Styles du calculateur repris du module Conseils */
+.calc-box{background:#f8f9fa;padding:15px;border-radius:8px;border:1px solid #e9ecef}
+.calc-box h4{margin-top:0;color:#17301f}
+.calc-box button{width:100%;background:#087f3e;color:white;border:none;padding:10px;margin-top:15px;border-radius:6px;cursor:pointer;font-weight:bold}
+.calc-box button:hover{background:#0c9b4d}
+.result-display{margin-top:15px;padding:10px;background:#e8f8f5;border:1px solid #a3e4d7;border-radius:5px;font-weight:bold;color:#117a65;text-align:center}
+
 
 </style>
 <!-- Google tag (gtag.js) -->
@@ -188,7 +195,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <header>
   <div>
     <h2 style="margin:0">🐔 MAHUTIN AGRODIGITAL</h2>
-    <div class="muted">GOLIATH MANAGER—plateforme d'accompagnement et de suivi technique</div>
+    <div class="muted">GOLIATH MANAGER V11 — plateforme cloud Firestore</div>
   </div>
 </header>
 
@@ -226,6 +233,24 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <div class="notice">🌾 <b>Indice de consommation :</b> il se calcule avec des données fiables de consommation et de gain de poids ; V5 l'affiche comme indicateur, pas comme diagnostic.</div>
 <div class="notice warn">☠️ <b>Mortalité :</b> une hausse inhabituelle doit conduire à vérifier les conditions d'élevage et, si nécessaire, à contacter un professionnel de santé animale.</div>
 <div class="notice">💰 <b>Rentabilité :</b> incluez poussins, aliment, santé, main-d'œuvre et autres charges avant de fixer le prix.</div>
+
+<div class="card">
+  <h3>💉 Programme vaccinal indicatif</h3>
+  <div class="notice warn">⚠️ Ce calendrier est un repère indicatif. Le programme réel doit être adapté à la zone, aux risques sanitaires, aux vaccins disponibles et aux recommandations d’un vétérinaire ou professionnel de santé animale.</div>
+  <div class="table">
+    <table>
+      <thead><tr><th>Âge</th><th>Maladie visée / traitement</th><th>Mode d'administration</th></tr></thead>
+      <tbody>
+        <tr><td>Jour 1</td><td>Newcastle (HB1) + Marek</td><td>Goutte oculaire / trempage de bec</td></tr>
+        <tr><td>Jour 7</td><td>Gumboro (1ère dose)</td><td>Eau de boisson</td></tr>
+        <tr><td>Jour 14</td><td>Gumboro (rappel)</td><td>Eau de boisson</td></tr>
+        <tr><td>Jour 21</td><td>Newcastle (Lasota)</td><td>Eau de boisson</td></tr>
+        <tr><td>Semaine 4</td><td>Prévention coccidiose</td><td>Selon le programme sanitaire recommandé</td></tr>
+        <tr><td>Semaine 6</td><td>Variole aviaire</td><td>Transfixion à la membrane de l’aile</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 </section>
 
 
@@ -388,82 +413,56 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 </main>
 
 
+<!-- V16 : calculateur remplacé par celui du module Conseils du fichier original fourni -->
 <section id="calculator" class="page">
   <h2>🧮 Calculateur Goliath</h2>
-  <p>Renseigne simplement <b>le nombre de sujets</b> et <b>l'âge</b>. Le logiciel calcule automatiquement les besoins du lot.</p>
+  <p>Utilisez les calculateurs rapides issus du module <b>Conseils & Outils pour Éleveurs</b>.</p>
 
-  <div class="calc-card calc-main-card">
-    <h3>🐔 Informations du lot</h3>
-    <div class="formgrid">
-      <div>
-        <label>Nombre de sujets</label>
-        <input id="calcBirds" type="number" min="1" step="1" value="100" oninput="calculateGoliath()">
-      </div>
-      <div>
-        <label>Âge des sujets (semaines)</label>
-        <input id="calcAge" type="number" min="1" max="52" step="1" value="6" oninput="calculateGoliath()">
+  <div class="eleveur-help-container">
+    <div class="help-card">
+      <h3>🧮 Calculateurs Rapides pour l'Éleveur</h3>
+      <div class="calc-grid">
+<!-- Calculateur 1 : Estimation de la Ration -->
+        <div class="calc-box">
+          <h4>Ration Alimentaire Quotidienne</h4>
+          <label for="effectif">Effectif du lot (nombre d'oiseaux) :</label>
+          <input type="number" id="effectif" placeholder="Ex: 100" min="1">
+
+          <label for="ageSemaine">Stade / Âge des sujets :</label>
+          <select id="ageSemaine">
+            <option value="15">Semaine 1 (~15g / sujet)</option>
+            <option value="30">Semaine 2 (~30g / sujet)</option>
+            <option value="50">Semaine 3 (~50g / sujet)</option>
+            <option value="70">Semaine 4 (~70g / sujet)</option>
+            <option value="90">Semaine 5 à 8 (~90g / sujet)</option>
+            <option value="120">Semaine 9 et plus (~120g / sujet)</option>
+          </select>
+
+          <button onclick="calculerRation()">Estimer le besoin (kg)</button>
+          <div id="resultRation" class="result-display" style="display:none;"></div>
+        </div>
+
+        <!-- Calculateur 2 : Capacité du Poulailler -->
+        <div class="calc-box">
+          <h4>Capacité d'Accueil (Densité)</h4>
+          <label for="surface">Surface disponible (m²) :</label>
+          <input type="number" id="surface" placeholder="Ex: 25" min="1">
+
+          <label for="typeStade">Stade d'élevage :</label>
+          <select id="typeStade">
+            <option value="30">Poussinière (0 à 4 sem. : ~30/m²)</option>
+            <option value="10">Croissance (5 à 12 sem. : ~10/m²)</option>
+            <option value="6">Adulte / Finition (~6/m²)</option>
+          </select>
+
+          <button onclick="calculerDensite()">Calculer la capacité max</button>
+          <div id="resultDensite" class="result-display" style="display:none;"></div>
+        </div>
+
       </div>
     </div>
-    <div id="calcAgeInfo" class="calc-note"></div>
-  </div>
-
-  <div class="calc-grid">
-    <div class="calc-card">
-      <h3>🌾 Quantité d'aliment</h3>
-      <div class="calc-highlight">
-        <span>Pour 1 sujet / jour</span>
-        <strong id="feedPerBird">—</strong>
       </div>
-      <div class="calc-highlight">
-        <span>Pour tout le lot / jour</span>
-        <strong id="feedPerLot">—</strong>
-      </div>
-      <div class="calc-result-row">
-        <span>Besoin pour 7 jours</span><strong id="feedWeek">—</strong>
-      </div>
-      <div class="calc-result-row">
-        <span>Besoin pour 30 jours</span><strong id="feedMonth">—</strong>
-      </div>
-      <div class="calc-result-row">
-        <span>Sacs de 25 kg / 7 jours</span><strong id="feedBagsWeek">—</strong>
-      </div>
-      <p class="calc-note">Repère de rationnement indicatif, modifiable dans le code si ta fiche d'aliment ou tes données d'élevage donnent une autre valeur.</p>
     </div>
-
-    <div class="calc-card">
-      <h3>🏠 Superficie nécessaire</h3>
-      <div class="calc-highlight">
-        <span>Densité de référence</span>
-        <strong id="areaDensity">—</strong>
-      </div>
-      <div class="calc-highlight">
-        <span>Surface nécessaire pour le lot</span>
-        <strong id="areaTotal">—</strong>
-      </div>
-      <div class="calc-result-row">
-        <span>Exemple de dimensions</span><strong id="areaDimensions">—</strong>
-      </div>
-      <p class="calc-note">Le calcul utilise un repère prudent de densité au sol selon l'âge. La ventilation, la chaleur, le bâtiment et le mode d'élevage doivent aussi être pris en compte.</p>
-    </div>
-  </div>
-
-  <div class="calc-card" style="margin-top:14px">
-    <h3>📋 Repères utilisés</h3>
-    <table class="calc-table">
-      <thead><tr><th>Âge</th><th>Aliment / sujet / jour</th><th>Densité Goliath</th></tr></thead>
-      <tbody>
-        <tr><td>1 semaine</td><td>15 g</td><td>50 sujets/m²</td></tr>
-        <tr><td>2–4 semaines</td><td>20 à 30 g</td><td>30–40 sujets/m² → calcul à 30</td></tr>
-        <tr><td>5–8 semaines</td><td>35 à 50 g</td><td>20–25 sujets/m² → calcul à 20</td></tr>
-        <tr><td>9–12 semaines</td><td>55 à 70 g</td><td>15–20 sujets/m² → calcul à 15</td></tr>
-        <tr><td>13–16 semaines</td><td>75 à 90 g</td><td>10–15 sujets/m² → calcul à 10</td></tr>
-        <tr><td>17–20 semaines</td><td>95 à 110 g</td><td>8–10 sujets/m² → calcul à 8</td></tr>
-        <tr><td>21–24 semaines</td><td>115 à 130 g</td><td>6–8 sujets/m² → calcul à 6</td></tr>
-        <tr><td>25+ semaines</td><td>130 g*</td><td>4–6 sujets/m² → calcul à 4</td></tr>
-      </tbody>
-    </table>
-    <p class="calc-note">Pour la densité, la norme de travail retenue dans ce calculateur est : 50 sujets/m² à 1 semaine, puis 30–40 à 2–4 semaines. Pour les âges suivants, des fourchettes progressives sont utilisées et le calcul de surface prend volontairement la borne basse de chaque fourchette pour éviter de surcharger le bâtiment.</p>
-    <p class="calc-note">*Le rationnement reste un repère indicatif : la consommation réelle dépend notamment de l'aliment, du poids, du climat et de la conduite du lot. La densité doit aussi être adaptée à la ventilation, à la chaleur, à la litière et au confort des oiseaux.</p>
   </div>
 </section>
 <div class="modal" id="lotModal"><div class="box"><h2>➕ Créer un lot Goliath</h2><form id="lotForm"><div class="formgrid"><div><label>Nom du lot</label><input id="lname" required></div><div><label>Effectif initial</label><input id="lcount" type="number" min="1" value="100" required></div><div><label>Date de mise en place</label><input id="ldate" type="date" required></div><div><label>Prix / poussin (F)</label><input id="lprice" type="number" min="0" value="700" required></div><div><label>Objectif poids final (kg)</label><input id="target" type="number" step=".01" min="0" value="2.5"></div><div><label>Âge objectif (jours)</label><input id="targetAge" type="number" min="1" value="90"></div></div><label>Fournisseur</label><input id="supplier"><div class="formactions"><button type="button" class="secondary" onclick="closeM('lotModal')">Annuler</button><button class="primary">Créer le lot</button></div></form></div></div>
@@ -500,7 +499,7 @@ function render(){
     let last=l.records.at(-1),m=l.deaths/l.initial*100;
     $('homeDetail').innerHTML=`<h3>${l.name}</h3><div class="muted">Mis en place le ${new Date(l.date+'T00:00:00').toLocaleDateString('fr-FR')}</div><div class="kpis" style="margin-top:10px"><div class="kpi">Âge<div class="big">${age(l)} j</div></div><div class="kpi">Vivants<div class="big">${l.current}</div></div><div class="kpi">Mortalité<div class="big">${m.toFixed(1)} %</div></div><div class="kpi">Poids<div class="big">${last?last.avg.toFixed(2)+' kg':'—'}</div></div></div>`
   }else $('homeDetail').textContent='Créez un lot pour commencer.';
-  $('lotList').innerHTML=db.lots.length?db.lots.map(x=>`<div class="item"><div><b>${x.name}</b><div class="muted">${x.current}/${x.initial} vivants · âge ${age(x)} j · ${x.records.length} relevés</div></div><button class="secondary" onclick="db.active=${x.id};save();show('analysis',document.querySelectorAll('nav button')[3])">Ouvrir</button></div>`).join(''):'<div class="card">Aucun lot.</div>';
+  $('lotList').innerHTML=db.lots.length?db.lots.map(x=>`<div class="item"><div><b>${x.name}</b><div class="muted">${x.current}/${x.initial} vivants · âge ${age(x)} j · ${x.records.length} relevés</div></div><div class="actions" style="margin:0"><button class="secondary" onclick="db.active=${x.id};save();show('analysis',document.querySelectorAll('nav button')[3])">Ouvrir</button><button class="danger" onclick="deleteLot(${x.id})">Supprimer</button></div></div>`).join(''):'<div class="card">Aucun lot.</div>';
   let rows=[];db.lots.forEach(l=>l.records.forEach(r=>rows.push({l,r})));rows.sort((a,b)=>b.r.date.localeCompare(a.r.date));$('recordsBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${x.r.date}</td><td>${x.l.name}</td><td>${age(x.l,x.r.date)} j</td><td>${x.r.start-x.r.deaths-x.r.sold}</td><td>${x.r.avg.toFixed(2)} kg</td><td>${x.r.feed.toFixed(1)} kg</td><td>${money(x.r.cost)}</td></tr>`).join(''):'<tr><td colspan="7">Aucun relevé.</td></tr>';
   $('name').value=db.profile.name||'';$('phone').value=db.profile.phone||'';$('loc').value=db.profile.location||'';$('ptype').value=db.profile.type||'Éleveur débutant';renderSheet();profit()
 }
@@ -515,6 +514,7 @@ drawChart(l.records)}
 function drawChart(rs){let c=$('sheetChart');if(!c)return;let x=c.getContext('2d'),w=c.width,h=c.height;x.clearRect(0,0,w,h);if(!rs.length){x.font='16px Arial';x.fillText('Ajoutez un relevé pour afficher la courbe.',25,45);return}let v=rs.map(r=>r.avg),mx=Math.max(...v)*1.2,mn=Math.max(0,Math.min(...v)*.8),p=45;x.strokeStyle='#ccd6ce';x.beginPath();x.moveTo(p,15);x.lineTo(p,h-35);x.lineTo(w-15,h-35);x.stroke();x.strokeStyle='#087f3e';x.lineWidth=3;x.beginPath();v.forEach((q,i)=>{let xx=p+i*(w-p-25)/Math.max(1,v.length-1),yy=h-35-(q-mn)/(mx-mn||1)*(h-55);i?x.lineTo(xx,yy):x.moveTo(xx,yy)});x.stroke()}
 function profit(){let l=lot();if(!l){$('pcost').textContent='0 F';$('prev').textContent='0 F';$('pbenef').textContent='0 F';$('pmarge').textContent='0 %';$('profitMsg').textContent='Créez un lot.';return}let cost=l.initial*l.price+l.expenses,p=+$('sellPrice').value||0,rev=l.current*p,b=rev-cost,m=rev?b/rev*100:0;$('pcost').textContent=money(cost);$('prev').textContent=money(rev);$('pbenef').textContent=money(b);$('pmarge').textContent=m.toFixed(1)+' %';$('profitMsg').innerHTML=b>=0?'🟢 <b>Simulation bénéficiaire.</b> Prix de revient par vivant : '+money(l.current?cost/l.current:0):'🔴 <b>Simulation déficitaire.</b> Prix de revient par vivant : '+money(l.current?cost/l.current:0)}
 function exportCSV(){let a=[['Date','Lot','Age jours','Début','Morts','Vendus','Vivants','Poids moyen kg','Aliment kg','Coût F CFA','Observations']];db.lots.forEach(l=>l.records.forEach(r=>a.push([r.date,l.name,age(l,r.date),r.start,r.deaths,r.sold,r.start-r.deaths-r.sold,r.avg.toFixed(2),r.feed,r.cost,r.obs])));let csv=a.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(';')).join('\n'),b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a1=document.createElement('a');a1.href=URL.createObjectURL(b);a1.download='goliath_manager_v5_releves.csv';a1.click()}
+function deleteLot(id){let l=db.lots.find(x=>x.id===id);if(!l)return;if(!confirm('Supprimer le lot « '+l.name+' » ?\nCette action supprimera aussi ses relevés et données associés.'))return;db.lots=db.lots.filter(x=>x.id!==id);if(db.active===id)db.active=db.lots.length?db.lots[0].id:null;save();}
 function resetAll(){if(confirm('Effacer toutes les données ?')){localStorage.removeItem(KEY);location.reload()}}
 
 /* V6 ADDITION - STOCK, ACHATS, CONSOMMATION */
@@ -898,64 +898,43 @@ render=function(){
     }
   }
 
-// V13 — Calculateur Goliath
-function goliathFeedPerBird(age){
-  age=Math.max(1,Math.floor(Number(age)||1));
-  // Repère indicatif : 15 g à S1, puis +5 g/semaine, plafonné à 130 g dès S24.
-  return Math.min(130, 15 + (age-1)*5);
-}
-function goliathDensity(age){
-  age=Math.max(1,Math.floor(Number(age)||1));
-  // Norme de densité demandée pour Goliath.
-  // Pour les fourchettes, le calcul utilise la borne basse afin de rester prudent.
-  if(age===1) return 50;
-  if(age<=4) return 30;
-  if(age<=8) return 20;
-  if(age<=12) return 15;
-  if(age<=16) return 10;
-  if(age<=20) return 8;
-  if(age<=24) return 6;
-  return 4;
-}
-function goliathAgeBand(age){
-  age=Math.max(1,Math.floor(Number(age)||1));
-  if(age===1) return '1 semaine';
-  if(age<=4) return '2–4 semaines';
-  if(age<=8) return '5–8 semaines';
-  if(age<=12) return '9–12 semaines';
-  if(age<=16) return '13–16 semaines';
-  if(age<=20) return '17–20 semaines';
-  if(age<=24) return '21–24 semaines';
-  return '25 semaines et plus';
-}
-function calculateGoliath(){
-  const birds=Math.max(1,Math.floor(Number(document.getElementById('calcBirds')?.value)||1));
-  const age=Math.max(1,Math.floor(Number(document.getElementById('calcAge')?.value)||1));
-  const perBird=goliathFeedPerBird(age);
-  const perLotKg=birds*perBird/1000;
-  const weekKg=perLotKg*7;
-  const monthKg=perLotKg*30;
-  const bagsWeek=weekKg/25;
-  const density=goliathDensity(age);
-  const area=birds/density;
-  const width=Math.max(1,Math.sqrt(area));
-  const length=area/width;
+/* FONCTIONS DES CALCULATEURS ÉLEVEURS */
+window.calculerRation = function() {
+  const effectif = parseFloat(document.getElementById('effectif').value);
+  const grammage = parseFloat(document.getElementById('ageSemaine').value);
+  const resultDiv = document.getElementById('resultRation');
 
-  const set=(id,val)=>{const e=document.getElementById(id);if(e)e.textContent=val;};
-  set('feedPerBird',perBird+' g');
-  set('feedPerLot',perLotKg.toFixed(2)+' kg');
-  set('feedWeek',weekKg.toFixed(2)+' kg');
-  set('feedMonth',monthKg.toFixed(2)+' kg');
-  set('feedBagsWeek',bagsWeek.toFixed(2)+' sacs');
-  set('areaDensity',density+' sujets/m²');
-  set('areaTotal',area.toFixed(2)+' m²');
-  set('areaDimensions',length.toFixed(2)+' m × '+width.toFixed(2)+' m');
-  set('calcAgeInfo','À '+age+' semaine(s), le repère utilisé est '+perBird+' g/sujet/jour et '+density+' sujets/m².');
+  if (!effectif || effectif <= 0) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.color = '#c0392b';
+    resultDiv.innerHTML = "Saisissez un effectif d'oiseaux valide.";
+    return;
+  }
+
+  const totalKg = (effectif * grammage) / 1000;
+  resultDiv.style.display = 'block';
+  resultDiv.style.color = '#117a65';
+  resultDiv.innerHTML = `Besoin estimé : <strong>${totalKg.toFixed(2)} kg</strong> / jour.`;
 }
-function initCalculator(){
-  calculateGoliath();
+
+window.calculerDensite = function() {
+  const surface = parseFloat(document.getElementById('surface').value);
+  const ratio = parseFloat(document.getElementById('typeStade').value);
+  const resultDiv = document.getElementById('resultDensite');
+
+  if (!surface || surface <= 0) {
+    resultDiv.style.display = 'block';
+    resultDiv.style.color = '#c0392b';
+    resultDiv.innerHTML = "Saisissez une surface valide.";
+    return;
+  }
+
+  const capaciteMax = Math.floor(surface * ratio);
+  resultDiv.style.display = 'block';
+  resultDiv.style.color = '#117a65';
+  resultDiv.innerHTML = `Capacité max recommandée : <strong>${capaciteMax} sujets</strong>.`;
 }
-document.addEventListener('DOMContentLoaded',initCalculator);
+
 </script>
 
 <section id="cloudRules" class="page"><div class="card"><h2>🔐 Règles Firestore</h2><p>À coller dans Firebase Console → Firestore Database → Règles.</p><textarea style="width:100%;min-height:500px;font-family:monospace" readonly>rules_version = '2';
@@ -967,6 +946,5 @@ service cloud.firestore {
   match /orders/{orderId} { allow create: if request.auth != null && request.resource.data.buyerId == request.auth.uid; allow read: if request.auth != null && (resource.data.buyerId == request.auth.uid || resource.data.sellerId == request.auth.uid); allow update: if request.auth != null && (resource.data.buyerId == request.auth.uid || resource.data.sellerId == request.auth.uid); }
   match /{document=**} { allow read, write: if false; }
  }
-}</textarea><p><b>⚠️</b> Teste les règles avant la production.</p></div></section>
-</body>
+}</textarea><p><b>⚠️</b> Teste les règles avant la production.</p></div></section></body>
 </html>
