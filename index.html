@@ -200,6 +200,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 </header>
 
 <nav style="display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)">
+  <button onclick="show('profile',this)">👤 Profil</button>
   <button class="active" onclick="show('home',this)">🏠 Accueil</button>
   <button onclick="show('lots',this)">🐔 Lots</button>
   <button onclick="show('records',this)">📝 Relevés</button>
@@ -207,7 +208,6 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
   <button onclick="show('profit',this)">💰 Rentabilité</button><button onclick="show('intelligence',this)">🧠 Intelligence</button><button onclick="show('marketplace',this)">🛒 Marketplace</button><button onclick="show('ecosysteme',this)">🚀 Écosystème</button><button onclick="show('cloud',this)">☁️ Compte Cloud</button><button onclick="show('calculator',this)">🧮 Calculateur</button>
   <button onclick="show('stock',this)">📦 Stock & Aliments</button>
   <button onclick="show('advice',this)">📚 Conseils</button>
-  <button onclick="show('profile',this)">👤 Profil</button>
 </nav>
 <main>
 <section id="home" class="page active">
