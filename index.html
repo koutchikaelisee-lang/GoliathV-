@@ -488,7 +488,7 @@ $('recordForm').addEventListener('submit',e=>{e.preventDefault();let l=db.lots.f
 $('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile={name:$('name').value,phone:$('phone').value,location:$('loc').value,type:$('ptype').value};save();alert('Profil enregistré.')});
 function render(){
   let l=lot();
-  let greeting = db.profile.name ? 'Bonjour, ' + db.profile.name + ' 👋' : 'Bonjour, Éleveur 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!';
+  let greeting = db.profile.name ? 'Bonjour, ' + db.profile.name + ' 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!' : 'Bonjour, Éleveur 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!';
   if($('helloText')) $('helloText').textContent = greeting;
   
   $('totalLots').textContent=db.lots.filter(x=>x.current>0).length;
