@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Goliath Manager</title>
+<title>Goliath Manager V11 — Cloud Firestore</title>
 <style>
     .scroll-text {
   display: inline-block;
@@ -170,6 +170,10 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 .result-display{margin-top:15px;padding:10px;background:#e8f8f5;border:1px solid #a3e4d7;border-radius:5px;font-weight:bold;color:#117a65;text-align:center}
 
 
+.auth-gate{position:fixed;inset:0;background:#0f172a;display:flex;align-items:center;justify-content:center;padding:20px;z-index:1000}
+.auth-gate-box{background:#fff;border-radius:16px;padding:24px;max-width:400px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.auth-gate-box form label{display:block;margin-top:10px;font-weight:600}
+.auth-gate-box form input{width:100%;padding:10px;margin-top:4px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box}
 </style>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-EDE28G0XD9"></script>
@@ -183,6 +187,27 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 </head>
 <body>
 
+<div id="authGate" class="auth-gate">
+  <div class="auth-gate-box">
+    <h2 style="margin-top:0">🐔 GOLIATH MANAGER</h2>
+    <p class="muted">Connecte-toi ou crée un compte pour accéder à ton espace éleveur. Tes données seront sauvegardées et disponibles à chaque connexion.</p>
+    <form id="gateAuthForm" autocomplete="on">
+      <label>Email</label>
+      <input id="gateEmail" type="email" autocomplete="username" required>
+      <label>Mot de passe</label>
+      <input id="gatePassword" type="password" autocomplete="current-password" minlength="6" required>
+      <div class="formactions">
+        <button class="primary">🔑 Se connecter</button>
+        <button type="button" class="secondary" onclick="gateRegister()">➕ Créer un compte</button>
+      </div>
+    </form>
+    <p id="gateMessage" class="muted"></p>
+    <div id="gateOfflineNotice" class="notice" style="display:none">Connexion au service cloud indisponible pour le moment. Réessaie plus tard.</div>
+  </div>
+</div>
+
+<div id="appRoot" style="display:none">
+
 <a class="whatsapp-help"
    href="https://wa.me/2290155734801?text=Bonjour%2C%20je%20suis%20utilisateur%20de%20GOLIATH%20MANAGER%20et%20j%27ai%20besoin%20d%27aide%20concernant%20mon%20%C3%A9levage."
    target="_blank"
@@ -195,7 +220,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <header>
   <div>
     <h2 style="margin:0">🐔 MAHUTIN AGRODIGITAL</h2>
-    <div class="muted">GOLIATH MANAGER-plateforme d'accompagnement et de suivi technique</div>
+    <div class="muted">GOLIATH MANAGER V11 — plateforme cloud Firestore</div>
   </div>
 </header>
 
@@ -246,7 +271,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
         <tr><td>Jour 14</td><td>Gumboro (rappel)</td><td>Eau de boisson</td></tr>
         <tr><td>Jour 21</td><td>Newcastle (Lasota)</td><td>Eau de boisson</td></tr>
         <tr><td>Semaine 4</td><td>Prévention coccidiose</td><td>Selon le programme sanitaire recommandé</td></tr>
-        <tr><td>Semaine 6</td><td>Variole aviaire</td><td>Transfixion alaire</td></tr>
+        <tr><td>Semaine 6</td><td>Variole aviaire</td><td>Transfixion à la membrane de l’aile</td></tr>
       </tbody>
     </table>
   </div>
@@ -381,8 +406,8 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
     <div class="cloud-card">
       <h3>🔐 Connexion</h3>
       <form id="cloudAuthForm">
-        <label>Email</label><input id="cloudEmail" type="email" required>
-        <label>Mot de passe</label><input id="cloudPassword" type="password" minlength="6" required>
+        <label>Email</label><input id="cloudEmail" type="email" autocomplete="username" required>
+        <label>Mot de passe</label><input id="cloudPassword" type="password" autocomplete="current-password" minlength="6" required>
         <div class="formactions">
           <button class="primary">🔑 Se connecter</button>
           <button type="button" class="secondary" onclick="cloudRegister()">➕ Créer un compte</button>
@@ -411,6 +436,8 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
 <section id="profile" class="page"><h2>👤 Profil</h2><div class="card"><form id="profileForm"><div class="formgrid"><div><label>Nom</label><input id="name"></div><div><label>Téléphone</label><input id="phone"></div><div><label>Localisation</label><input id="loc"></div><div><label>Type d'éleveur</label><select id="ptype"><option>Éleveur débutant</option><option>Éleveur expérimenté</option><option>Producteur professionnel</option></select></div></div><div class="formactions"><button class="primary">💾 Enregistrer</button></div></form></div><div class="card"><button class="secondary" onclick="exportCSV()">📥 Exporter les relevés CSV</button> <button class="danger" onclick="resetAll()">🗑️ Effacer les données</button></div></section>
 </main>
+
+</div>
 
 
 <!-- V16 : calculateur remplacé par celui du module Conseils du fichier original fourni -->
@@ -442,7 +469,6 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
           <div id="resultRation" class="result-display" style="display:none;"></div>
         </div>
 
-        <!-- Calculateur 2 : Capacité du Poulailler -->
         <!-- Calculateur 2 : Capacité du Poulailler -->
         <div class="calc-box">
           <h4>Capacité d'Accueil (Densité)</h4>
@@ -880,7 +906,7 @@ render=function(){
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
   // RENSEIGNER LES VALEURS DE TON PROJET FIREBASE ICI.
-   const GOLIATH_FIREBASE_CONFIG = {
+  const GOLIATH_FIREBASE_CONFIG = {
     apiKey: "AIzaSyAYvdDGSGJDLGTkRR2AAcf6OMZElVRW75E",
     authDomain: "goliath-manager-41208.firebaseapp.com",
     projectId: "goliath-manager-41208",
@@ -888,6 +914,7 @@ render=function(){
     messagingSenderId: "435783362361",
     appId: "1:435783362361:web:6c42b4661538c0e8326ae8"
   };
+
   window.goliathCloud = { ready:false, auth:null, app:null };
 
   if(GOLIATH_FIREBASE_CONFIG){
@@ -897,12 +924,53 @@ render=function(){
       window.goliathCloud = {ready:true, auth, app, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut};
       onAuthStateChanged(auth, user=>{
         window.goliathCloud.user=user||null;
+        if(user){ goliathShowApp(); } else { goliathShowGate(); }
         if(typeof window.renderCloud==='function') window.renderCloud();
       });
     }catch(err){
       console.error('Firebase:',err);
       window.goliathCloud.error=err;
     }
+  }
+
+  if(!window.goliathCloud.ready){
+    const notice=document.getElementById('gateOfflineNotice');
+    if(notice) notice.style.display='block';
+  }
+
+  function goliathShowApp(){
+    const gate=document.getElementById('authGate');
+    const root=document.getElementById('appRoot');
+    if(gate) gate.style.display='none';
+    if(root) root.style.display='';
+  }
+  function goliathShowGate(){
+    const gate=document.getElementById('authGate');
+    const root=document.getElementById('appRoot');
+    if(gate) gate.style.display='flex';
+    if(root) root.style.display='none';
+  }
+  window.gateMessage=function(msg){ const el=document.getElementById('gateMessage'); if(el) el.textContent=msg; };
+  window.gateRegister=async function(){
+    const c=window.goliathCloud;
+    if(!c || !c.ready) return window.gateMessage('Service cloud indisponible pour le moment.');
+    const email=document.getElementById('gateEmail').value.trim();
+    const pass=document.getElementById('gatePassword').value;
+    try{
+      await c.createUserWithEmailAndPassword(c.auth,email,pass);
+      window.gateMessage('Compte créé et connecté.');
+    }catch(e){ window.gateMessage('Impossible de créer le compte : '+(e.code||e.message)); }
+  };
+  if(document.getElementById('gateAuthForm')){
+    document.getElementById('gateAuthForm').onsubmit=async function(e){
+      e.preventDefault();
+      const c=window.goliathCloud;
+      if(!c || !c.ready) return window.gateMessage('Service cloud indisponible pour le moment.');
+      try{
+        await c.signInWithEmailAndPassword(c.auth,document.getElementById('gateEmail').value.trim(),document.getElementById('gatePassword').value);
+        window.gateMessage('Connexion réussie.');
+      }catch(err){ window.gateMessage('Connexion impossible : '+(err.code||err.message)); }
+    };
   }
 
 /* FONCTIONS DES CALCULATEURS ÉLEVEURS */
