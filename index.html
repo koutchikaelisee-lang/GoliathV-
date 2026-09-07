@@ -879,8 +879,14 @@ render=function(){
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
   // RENSEIGNER LES VALEURS DE TON PROJET FIREBASE ICI.
-  const GOLIATH_FIREBASE_CONFIG = null;
-
+   const GOLIATH_FIREBASE_CONFIG = {
+    apiKey: "AIzaSyAYvdDGSGJDLGTkRR2AAcf6OMZElVRW75E",
+    authDomain: "goliath-manager-41208.firebaseapp.com",
+    projectId: "goliath-manager-41208",
+    storageBucket: "goliath-manager-41208.firebasestorage.app",
+    messagingSenderId: "435783362361",
+    appId: "1:435783362361:web:6c42b4661538c0e8326ae8"
+  };
   window.goliathCloud = { ready:false, auth:null, app:null };
 
   if(GOLIATH_FIREBASE_CONFIG){
