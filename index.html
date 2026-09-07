@@ -443,10 +443,11 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
         </div>
 
         <!-- Calculateur 2 : Capacité du Poulailler -->
+        <!-- Calculateur 2 : Capacité du Poulailler -->
         <div class="calc-box">
           <h4>Capacité d'Accueil (Densité)</h4>
-          <label for="surface">Surface disponible (m²) :</label>
-          <input type="number" id="surface" placeholder="Ex: 25" min="1">
+          <label for="nbSujets">Nombre de sujets :</label>
+          <input type="number" id="nbSujets" placeholder="Ex: 100" min="1">
 
           <label for="typeStade">Stade d'élevage :</label>
           <select id="typeStade">
@@ -455,7 +456,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
             <option value="6">Adulte / Finition (~6/m²)</option>
           </select>
 
-          <button onclick="calculerDensite()">Calculer la capacité max</button>
+          <button onclick="calculerDensite()">Calculer l'espace nécessaire</button>
           <div id="resultDensite" class="result-display" style="display:none;"></div>
         </div>
 
@@ -924,21 +925,21 @@ window.calculerRation = function() {
 }
 
 window.calculerDensite = function() {
-  const surface = parseFloat(document.getElementById('surface').value);
+  const nbSujets = parseFloat(document.getElementById('nbSujets').value);
   const ratio = parseFloat(document.getElementById('typeStade').value);
   const resultDiv = document.getElementById('resultDensite');
 
-  if (!surface || surface <= 0) {
+  if (!nbSujets || nbSujets <= 0) {
     resultDiv.style.display = 'block';
     resultDiv.style.color = '#c0392b';
-    resultDiv.innerHTML = "Saisissez une surface valide.";
+    resultDiv.innerHTML = "Saisissez un nombre de sujets valide.";
     return;
   }
 
-  const capaciteMax = Math.floor(surface * ratio);
+  const surfaceNecessaire = nbSujets / ratio;
   resultDiv.style.display = 'block';
   resultDiv.style.color = '#117a65';
-  resultDiv.innerHTML = `Capacité max recommandée : <strong>${capaciteMax} sujets</strong>.`;
+  resultDiv.innerHTML = `Espace nécessaire : <strong>${surfaceNecessaire.toFixed(2)} m²</strong>.`;
 }
 
 </script>
