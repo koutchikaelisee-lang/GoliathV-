@@ -282,7 +282,8 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <section id="stock" class="page">
 <div class="actions"><h2 style="flex:1">📦 Stock & Aliments</h2>
 <button class="primary" onclick="openPurchase()">➕ Enregistrer un achat</button>
-<button class="secondary" onclick="openConsumption()">🌾 Consommation</button></div>
+<button class="secondary" onclick="openConsumption()">🌾 Consommation</button>
+<button class="secondary" onclick="requestGoliathNotifications()">🔔 Activer les notifications</button></div>
 <div class="stock-grid">
 <div class="kpi"><div class="muted">Stock total</div><div class="big" id="stockTotalKg">0 kg</div></div>
 <div class="kpi"><div class="muted">Valeur du stock</div><div class="big" id="stockValue">0 F</div></div>
@@ -615,10 +616,61 @@ function renderStock(){
  }).join(''):'<div class="card">Aucun aliment enregistré. Ajoutez votre premier achat.</div>';
  if($('purchaseBody'))$('purchaseBody').innerHTML=db.purchases.length?db.purchases.slice().reverse().map(x=>`<tr><td>${x.date}</td><td>${x.name}</td><td>${x.qty.toFixed(1)} kg</td><td>${money(x.total)}</td><td>${money(x.priceKg)}</td><td>${x.supplier||'—'}</td></tr>`).join(''):'<tr><td colspan="6">Aucun achat.</td></tr>';
  if($('consumptionBody'))$('consumptionBody').innerHTML=db.consumptions.length?db.consumptions.slice().reverse().map(x=>`<tr><td>${x.date}</td><td>${x.lotName}</td><td>${x.name}</td><td>${x.qty.toFixed(1)}</td><td>${money(x.cost)}</td><td>${money(x.costPerBird)}</td></tr>`).join(''):'<tr><td colspan="6">Aucune consommation.</td></tr>';
+ notifyStockAlert();
+}
+/* Normes de consommation (mêmes repères que le calculateur de ration) */
+function goliathGramsParSujet(ageSemaines){
+  if(ageSemaines<=1) return 15;
+  if(ageSemaines<=2) return 30;
+  if(ageSemaines<=3) return 50;
+  if(ageSemaines<=4) return 70;
+  if(ageSemaines<=8) return 90;
+  return 120;
+}
+function goliathConsoQuotidienneKg(){
+  let totalG=0;
+  (db.lots||[]).forEach(l=>{
+    const ageSemaines=Math.max(1,Math.ceil(age(l)/7));
+    const vivants=Number(l.current)||0;
+    totalG+=vivants*goliathGramsParSujet(ageSemaines);
+  });
+  return totalG/1000;
+}
+function requestGoliathNotifications(){
+  if(!('Notification' in window)){alert('Les notifications ne sont pas prises en charge par ce navigateur.');return;}
+  Notification.requestPermission().then(p=>{
+    alert(p==='granted'?'Notifications activées ✅':'Notifications refusées. Active-les dans les paramètres du navigateur si tu changes d’avis.');
+  });
+}
+let goliathLastStockAlert='';
+function notifyStockAlert(){
+  const stock=db.stock||[];
+  const totalStock=stock.reduce((a,x)=>a+Number(x.qty||0),0);
+  const lowItems=stock.filter(x=>Number(x.qty||0)<=Number(x.threshold||0));
+  const consoJour=goliathConsoQuotidienneKg();
+  const joursRestants=consoJour>0?(totalStock/consoJour):Infinity;
+
+  let msg=null;
+  if(lowItems.length){
+    msg='Stock bas : '+lowItems.map(x=>x.name).join(', ')+' — pense à réapprovisionner.';
+  }else if(isFinite(joursRestants) && joursRestants<=2 && totalStock>0){
+    msg='Au rythme de consommation actuel de tes lots (~'+consoJour.toFixed(1)+' kg/jour selon les normes), il reste environ '+joursRestants.toFixed(1)+' jour(s) de stock.';
+  }
+
+  if(msg){
+    if(goliathLastStockAlert!==msg){
+      goliathLastStockAlert=msg;
+      playAlertSound();
+      if('Notification' in window && Notification.permission==='granted'){
+        try{ new Notification('🐔 Goliath Manager — Alerte stock',{body:msg}); }catch(e){}
+      }
+    }
+  }else{
+    goliathLastStockAlert='';
+  }
 }
 const renderV5=render;
 render=function(){renderV5();renderStock()};
-
 render();
 
 /* ===== V7 : MOTEUR D'ANALYSE INTELLIGENT ===== */
