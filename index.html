@@ -251,8 +251,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
 <section id="analysis" class="page"><div class="actions"><h2 style="flex:1">📊 Fiche complète du lot</h2><select id="analysisLot" onchange="setActive(+this.value)"></select></div><div id="lotSheet"></div></section>
 
-<section id="profit" class="page"><h2>💰 Rentabilité</h2><div class="card"><label>Prix de vente envisagé par Goliath vivant (F CFA)</label><input id="sellPrice" type="number" value="3500" oninput="profit()"><div class="kpis" style="margin-top:10px"><div class="kpi"><div class="muted">Coût</div><div class="big" id="pcost">0 F</div></div><div class="kpi"><div class="muted">CA</div><div class="big" id="prev">0 F</div></div><div class="kpi"><div class="muted">Bénéfice</div><div class="big" id="pbenef">0 F</div></div><div class="kpi"><div class="muted">Marge</div><div class="big" id="pmarge">0 %</div></div></div><div class="notice" id="profitMsg"></div></div></section>
-
+<section id="profile" class="page"><h2>👤 Profil</h2><div class="card" id="profileFormCard"><form id="profileForm">
 <section id="advice" class="page"><h2>📚 Conseils & repères</h2>
 <div class="notice">⚖️ <b>Poids :</b> comparez les relevés réalisés dans des conditions similaires. Les objectifs doivent être adaptés à votre souche, alimentation et conduite.</div>
 <div class="notice">🌾 <b>Indice de consommation :</b> il se calcule avec des données fiables de consommation et de gain de poids ; V5 l'affiche comme indicateur, pas comme diagnostic.</div>
@@ -512,8 +511,27 @@ function openRecord(){if(!db.lots.length){alert('Créez d’abord un lot.');retu
 function setActive(id){db.active=id;save()}
 $('lotForm').addEventListener('submit',e=>{e.preventDefault();let n=+$('lcount').value,id=Date.now();db.lots.push({id,name:$('lname').value,initial:n,current:n,date:$('ldate').value,price:+$('lprice').value,target:+$('target').value,targetAge:+$('targetAge').value,supplier:$('supplier').value,deaths:0,feed:0,expenses:0,sold:0,records:[]});db.active=id;save();closeM('lotModal')});
 $('recordForm').addEventListener('submit',e=>{e.preventDefault();let l=db.lots.find(x=>x.id==+$('rlot').value),st=+$('rstart').value,d=+$('rdeath').value,s=+$('rsold').value,w=+$('rweighed').value,tw=+$('rtotalweight').value,f=+$('rfeed').value,c=[+$('rcfeed').value,+$('rchealth').value,+$('rclabor').value,+$('rcother').value].reduce((a,b)=>a+b,0);if(!l||d+s>st){alert('Vérifiez l’effectif : morts + vendus ne doivent pas dépasser le début de période.');return}l.current=st-d-s;l.deaths+=d;l.sold+=s;l.feed+=f;l.expenses+=c;l.records.push({date:$('rdate').value,start:st,deaths:d,sold:s,weighed:w,totalWeight:tw,avg:tw/w,feed:f,cost:c,obs:$('robs').value});db.active=l.id;save();closeM('recordModal');$('recordForm').reset();$('rdate').value=today});
-$('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile={name:$('name').value,phone:$('phone').value,location:$('loc').value,type:$('ptype').value};save();alert('Profil enregistré.')});
-function render(){
+$('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile={name:$('name').value,firstname:$('firstname').value,phone:$('phone').value,location:$('loc').value,type:$('ptype').value};save();renderProfileSummary();$('profileFormCard').style.display='none';alert('Profil enregistré.')});
+function editProfile(){
+  $('profileFormCard').style.display='block';
+  $('profileSummary').style.display='none';
+}
+function renderProfileSummary(){
+  const p=db.profile||{};
+  const has=p.name||p.firstname||p.phone||p.location||p.type;
+  const box=$('profileSummary');
+  if(!has){box.style.display='none';box.innerHTML='';$('profileFormCard').style.display='block';return;}
+  box.style.display='block';
+  box.innerHTML=`<h3 style="margin-top:0">Informations enregistrées</h3>
+    <div><b>Nom :</b> ${p.name||'—'}</div>
+    <div><b>Prénom :</b> ${p.firstname||'—'}</div>
+    <div><b>Pays :</b> ${p.location||'—'}</div>
+    <div><b>Téléphone :</b> ${p.phone||'—'}</div>
+    <div><b>Type d'éleveur :</b> ${p.type||'—'}</div>
+    <div class="formactions"><button class="secondary" onclick="editProfile()">✏️ Modifier</button></div>`;
+  $('profileFormCard').style.display='none';
+}
+    function render ()}
   let l=lot();
   let greeting = db.profile.name ? 'Bonjour, ' + db.profile.name + ' 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!' : 'Bonjour, Éleveur 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!';
   if($('helloText')) $('helloText').textContent = greeting;
@@ -528,7 +546,7 @@ function render(){
   }else $('homeDetail').textContent='Créez un lot pour commencer.';
   $('lotList').innerHTML=db.lots.length?db.lots.map(x=>`<div class="item"><div><b>${x.name}</b><div class="muted">${x.current}/${x.initial} vivants · âge ${age(x)} j · ${x.records.length} relevés</div></div><div class="actions" style="margin:0"><button class="secondary" onclick="db.active=${x.id};save();show('analysis',document.querySelectorAll('nav button')[3])">Ouvrir</button><button class="danger" onclick="deleteLot(${x.id})">Supprimer</button></div></div>`).join(''):'<div class="card">Aucun lot.</div>';
   let rows=[];db.lots.forEach(l=>l.records.forEach(r=>rows.push({l,r})));rows.sort((a,b)=>b.r.date.localeCompare(a.r.date));$('recordsBody').innerHTML=rows.length?rows.map(x=>`<tr><td>${x.r.date}</td><td>${x.l.name}</td><td>${age(x.l,x.r.date)} j</td><td>${x.r.start-x.r.deaths-x.r.sold}</td><td>${x.r.avg.toFixed(2)} kg</td><td>${x.r.feed.toFixed(1)} kg</td><td>${money(x.r.cost)}</td></tr>`).join(''):'<tr><td colspan="7">Aucun relevé.</td></tr>';
-  $('name').value=db.profile.name||'';$('phone').value=db.profile.phone||'';$('loc').value=db.profile.location||'';$('ptype').value=db.profile.type||'Éleveur débutant';renderSheet();profit()
+$('name').value=db.profile.name||'';$('firstname').value=db.profile.firstname||'';$('phone').value=db.profile.phone||'';$('loc').value=db.profile.location||'';$('ptype').value=db.profile.type||'Éleveur débutant';renderProfileSummary();renderSheet();profit()
 }
 function renderSheet(){let l=lot();$('analysisLot').innerHTML=db.lots.map(x=>`<option value="${x.id}" ${x.id===db.active?'selected':''}>${x.name}</option>`).join('');if(!l){$('lotSheet').innerHTML='<div class="card">Créez un lot.</div>';return}let last=l.records.at(-1),m=l.initial?l.deaths/l.initial*100:0,feedBird=l.current?l.feed/l.current:0,weight=last?last.avg:0,progress=l.target?Math.min(100,weight/l.target*100):0;let alert=m>10?'red':m>5?'warn':'';let msg=m>10?'🔴 Mortalité élevée selon le seuil indicatif du prototype.':m>5?'🟠 Mortalité à surveiller.':'🟢 Mortalité dans la zone basse du prototype.';let gap=l.target&&last?(weight-l.target).toFixed(2):'—';
 $('lotSheet').innerHTML=`<div class="hero"><h2 style="margin:0">${l.name}</h2><div class="muted">Âge : ${age(l)} jours (${(age(l)/7).toFixed(1)} semaines) · Objectif : ${l.target} kg à ${l.targetAge} jours</div></div>
