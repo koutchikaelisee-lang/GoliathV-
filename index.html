@@ -251,6 +251,8 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
 <section id="analysis" class="page"><div class="actions"><h2 style="flex:1">📊 Fiche complète du lot</h2><select id="analysisLot" onchange="setActive(+this.value)"></select></div><div id="lotSheet"></div></section>
 
+<section id="profit" class="page"><h2>💰 Rentabilité</h2><div class="card"><label>Prix de vente envisagé par Goliath vivant (F CFA)</label><input id="sellPrice" type="number" value="3500" oninput="profit()"><div class="kpis" style="margin-top:10px"><div class="kpi"><div class="muted">Coût</div><div class="big" id="pcost">0 F</div></div><div class="kpi"><div class="muted">CA</div><div class="big" id="prev">0 F</div></div><div class="kpi"><div class="muted">Bénéfice</div><div class="big" id="pbenef">0 F</div></div><div class="kpi"><div class="muted">Marge</div><div class="big" id="pmarge">0 %</div></div></div><div class="notice" id="profitMsg"></div></div></section>
+    
 <section id="advice" class="page"><h2>📚 Conseils & repères</h2>
 <div class="notice">⚖️ <b>Poids :</b> comparez les relevés réalisés dans des conditions similaires. Les objectifs doivent être adaptés à votre souche, alimentation et conduite.</div>
 <div class="notice">🌾 <b>Indice de consommation :</b> il se calcule avec des données fiables de consommation et de gain de poids ; V5 l'affiche comme indicateur, pas comme diagnostic.</div>
