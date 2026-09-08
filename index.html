@@ -251,7 +251,6 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
 <section id="analysis" class="page"><div class="actions"><h2 style="flex:1">📊 Fiche complète du lot</h2><select id="analysisLot" onchange="setActive(+this.value)"></select></div><div id="lotSheet"></div></section>
 
-<section id="profile" class="page"><h2>👤 Profil</h2><div class="card" id="profileFormCard"><form id="profileForm">
 <section id="advice" class="page"><h2>📚 Conseils & repères</h2>
 <div class="notice">⚖️ <b>Poids :</b> comparez les relevés réalisés dans des conditions similaires. Les objectifs doivent être adaptés à votre souche, alimentation et conduite.</div>
 <div class="notice">🌾 <b>Indice de consommation :</b> il se calcule avec des données fiables de consommation et de gain de poids ; V5 l'affiche comme indicateur, pas comme diagnostic.</div>
@@ -433,8 +432,8 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
   </div>
 </section>
 
-<section id="profile" class="page"><h2>👤 Profil</h2><div class="card"><form id="profileForm"><div class="formgrid"><div><label>Nom</label><input id="name"></div><div><label>Téléphone</label><input id="phone"></div><div><label>Localisation</label><input id="loc"></div><div><label>Type d'éleveur</label><select id="ptype"><option>Éleveur débutant</option><option>Éleveur expérimenté</option><option>Producteur professionnel</option></select></div></div><div class="formactions"><button class="primary">💾 Enregistrer</button></div></form></div><div class="card"><button class="secondary" onclick="exportCSV()">📥 Exporter les relevés CSV</button> <button class="danger" onclick="resetAll()">🗑️ Effacer les données</button></div></section>
-</main>
+<section id="profile" class="page"><h2>👤 Profil</h2><div class="card" id="profileFormCard"><form id="profileForm"><div class="formgrid"><div><label>Nom</label><input id="name"></div><div><label>Prénom</label><input id="firstname"></div><div><label>Téléphone</label><input id="phone"></div><div><label>Pays</label><input id="loc"></div><div><label>Type d'éleveur</label><select id="ptype"><option>Éleveur débutant</option><option>Éleveur expérimenté</option><option>Producteur professionnel</option></select></div></div><div class="formactions"><button class="primary">💾 Enregistrer</button></div></form></div><div class="card" id="profileSummary" style="display:none"></div><div class="card"><button class="secondary" onclick="exportCSV()">📥 Exporter les relevés CSV</button> <button class="danger" onclick="resetAll()">🗑️ Effacer les données</button></div></section>
+<\main>
 
 </div>
 
@@ -531,7 +530,7 @@ function renderProfileSummary(){
     <div class="formactions"><button class="secondary" onclick="editProfile()">✏️ Modifier</button></div>`;
   $('profileFormCard').style.display='none';
 }
-    function render ()}
+    function render (){
   let l=lot();
   let greeting = db.profile.name ? 'Bonjour, ' + db.profile.name + ' 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!' : 'Bonjour, Éleveur 👋. Tu veux de l\'aide à gérer ton poulailler ??? Tu es au bon endroit !!!';
   if($('helloText')) $('helloText').textContent = greeting;
