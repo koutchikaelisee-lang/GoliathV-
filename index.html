@@ -213,6 +213,31 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
    target="_blank"
    rel="noopener noreferrer"
    aria-label="Contacter GOLIATH MANAGER sur WhatsApp">
+  <span class="wa-icon">☏</span>
+  <span class="wa-label">Besoin d'aide ? WhatsApp</span>
+</a>
+
+<header>
+  <div>
+    <h2 style="margin:0">🐔 MAHUTIN AGRODIGITAL</h2>
+    <div class="muted" style=''color:#000;font-size:10px''>GOLIATH MANAGER V11 — plateforme cloud Firestore</div>
+  </div>
+</header>
+
+<nav style="display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)">
+  <button onclick="show('profile',this)">👤 Profil</button>
+  <button class="active" onclick="show('home',this)">🏠 Accueil</button>
+  <button onclick="show('lots',this)">🐔 Lots</button>
+  <button onclick="show('records',this)">📝 Relevés</button>
+  <button onclick="show('analysis',this)">📊 Analyse</button>
+  <button onclick="show('profit',this)">💰 Rentabilité</button><button onclick="show('intelligence',this)">🧠 Intelligence</button><button onclick="show('marketplace',this)">🛒 Marketplace</button><button onclick="show('ecosysteme',this)">🚀 Écosystème</button><button onclick="show('cloud',this)">☁️ Compte Cloud</button><button onclick="show('calculator',this)">🧮 Calculateur</button>
+  <button onclick="show('stock',this)">📦 Stock & Aliments</button>
+  <button onclick="show('advice',this)">📚 Conseils</button>
+</nav>
+<main>
+<section id="home" class="page active">
+<div class="hero hero-banner">
+  <h2 id="hello"><span class="scroll-text" id="helloText">Bonjour, Éleveur 👋. Tu veux de l'aide à gérer ton poulailler ??? Tu es au bon endroit !!!</span></h2>
   <div class="muted hero-banner"><span class="scroll-text">Pilotez vos lots Goliath depuis votre téléphone. Pour toutes vos préoccupations et suggestions ou conseils, veuillez-nous contacter via whatsapp au 2290155734801 ou par mail koutchikaelisee@gmail.com</span></div>
 </div>
 <div class="grid"><div class="kpi"><div class="muted">Lots actifs</div><div class="big" id="totalLots">0</div></div><div class="kpi"><div class="muted">Oiseaux vivants</div><div class="big" id="totalBirds">0</div></div><div class="kpi"><div class="muted">Coût total</div><div class="big" id="totalCost">0 F</div></div><div class="kpi"><div class="muted">Lot sélectionné</div><div class="big" id="activeName">—</div></div></div>
@@ -418,6 +443,8 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <!-- V16 : calculateur remplacé par celui du module Conseils du fichier original fourni -->
 <section id="calculator" class="page">
   <h2>🧮 Calculateur Goliath</h2>
+  <p>Utilisez les calculateurs rapides issus du module <b>Conseils & Outils pour Éleveurs</b>.</p>
+
   <div class="eleveur-help-container">
     <div class="help-card">
       <h3>🧮 Calculateurs Rapides pour l'Éleveur</h3>
