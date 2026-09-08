@@ -283,7 +283,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <div class="actions"><h2 style="flex:1">📦 Stock & Aliments</h2>
 <button class="primary" onclick="openPurchase()">➕ Enregistrer un achat</button>
 <button class="secondary" onclick="openConsumption()">🌾 Consommation</button>
-<button class="secondary" onclick="requestGoliathNotifications()">🔔 Activer les notifications</button></div>
+<button class="secondary" onclick="goliathEnablePush()">🔔 Activer les notifications</button></div>
 <div class="stock-grid">
 <div class="kpi"><div class="muted">Stock total</div><div class="big" id="stockTotalKg">0 kg</div></div>
 <div class="kpi"><div class="muted">Valeur du stock</div><div class="big" id="stockValue">0 F</div></div>
@@ -973,9 +973,12 @@ render=function(){
     getAuth, onAuthStateChanged, signInWithEmailAndPassword,
     createUserWithEmailAndPassword, signOut
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-  import {
+import {
     getFirestore, doc, setDoc, getDoc
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-firestore.js";
+  import {
+    getMessaging, getToken, onMessage
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-messaging.js";
 
   // RENSEIGNER LES VALEURS DE TON PROJET FIREBASE ICI.
   const GOLIATH_FIREBASE_CONFIG = {
@@ -994,7 +997,34 @@ render=function(){
       const app = initializeApp(GOLIATH_FIREBASE_CONFIG);
       const auth = getAuth(app);
       const firestore = getFirestore(app);
-      window.goliathCloud = {ready:true, auth, app, firestore, doc, setDoc, getDoc, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut};
+      const messaging = getMessaging(app);
+      window.goliathCloud = {ready:true, auth, app, firestore, messaging, doc, setDoc, getDoc, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut};
+
+      window.goliathEnablePush = async function(){
+        try{
+          if(!('serviceWorker' in navigator)){ alert('Ton navigateur ne supporte pas les notifications push.'); return; }
+          const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
+          const permission = await Notification.requestPermission();
+          if(permission!=='granted'){ alert('Notifications refusées.'); return; }
+          const token = await getToken(messaging, { vapidKey:'BOSQBIBe3QIWzyRvw-Lt_T0OgjomCKNLmOLUdar8y0qoykEC3_hT6uithi6dlMxLitAA-XpMYFQeznyN_WPo7qQ', serviceWorkerRegistration: registration });
+          if(token && window.goliathCloud.user){
+            const ref = doc(firestore, 'userData', window.goliathCloud.user.uid);
+            await setDoc(ref, { fcmToken: token }, { merge:true });
+            alert('Notifications activées ✅');
+          } else if(!window.goliathCloud.user){
+            alert('Connecte-toi d’abord, puis réessaie.');
+          }
+        }catch(e){
+          console.error('FCM error', e);
+          alert('Impossible d’activer les notifications : '+e.message);
+        }
+      };
+      onMessage(messaging, payload=>{
+        const title=(payload.notification&&payload.notification.title)||'Goliath Manager';
+        const body=(payload.notification&&payload.notification.body)||'';
+        try{ new Notification(title,{body}); }catch(e){}
+      });
+
       onAuthStateChanged(auth, user=>{
         window.goliathCloud.user=user||null;
         if(user){ goliathShowApp(); loadCloudData(user); } else { goliathShowGate(); }
