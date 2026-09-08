@@ -496,6 +496,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <script>
 const KEY='GOLIATH_MANAGER_V5_DATA';
 let db=JSON.parse(localStorage.getItem(KEY)||'{"profile":{},"lots":[],"active":null}');
+window.db=db;
 const $=id=>document.getElementById(id), today=new Date().toISOString().slice(0,10);
 $('ldate').value=today;$('rdate').value=today;
 function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
@@ -509,7 +510,7 @@ function openRecord(){if(!db.lots.length){alert('Créez d’abord un lot.');retu
 function setActive(id){db.active=id;save()}
 $('lotForm').addEventListener('submit',e=>{e.preventDefault();let n=+$('lcount').value,id=Date.now();db.lots.push({id,name:$('lname').value,initial:n,current:n,date:$('ldate').value,price:+$('lprice').value,target:+$('target').value,targetAge:+$('targetAge').value,supplier:$('supplier').value,deaths:0,feed:0,expenses:0,sold:0,records:[]});db.active=id;save();closeM('lotModal')});
 $('recordForm').addEventListener('submit',e=>{e.preventDefault();let l=db.lots.find(x=>x.id==+$('rlot').value),st=+$('rstart').value,d=+$('rdeath').value,s=+$('rsold').value,w=+$('rweighed').value,tw=+$('rtotalweight').value,f=+$('rfeed').value,c=[+$('rcfeed').value,+$('rchealth').value,+$('rclabor').value,+$('rcother').value].reduce((a,b)=>a+b,0);if(!l||d+s>st){alert('Vérifiez l’effectif : morts + vendus ne doivent pas dépasser le début de période.');return}l.current=st-d-s;l.deaths+=d;l.sold+=s;l.feed+=f;l.expenses+=c;l.records.push({date:$('rdate').value,start:st,deaths:d,sold:s,weighed:w,totalWeight:tw,avg:tw/w,feed:f,cost:c,obs:$('robs').value});db.active=l.id;save();closeM('recordModal');$('recordForm').reset();$('rdate').value=today});
-$('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile={name:$('name').value,firstname:$('firstname').value,phone:$('phone').value,location:$('loc').value,type:$('ptype').value};save();renderProfileSummary();$('profileFormCard').style.display='none';alert('Profil enregistré.')});
+$('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile={name:$('name').value,firstname:$('firstname').value,phone:$('phone').value,location:$('loc').value,type:$('ptype').value};save();renderProfileSummary();$('profileFormCard').style.display='none';show('home',document.querySelectorAll('nav button')[1]);alert('Profil enregistré.')});
 function editProfile(){
   $('profileFormCard').style.display='block';
   $('profileSummary').style.display='none';
@@ -954,11 +955,15 @@ render=function(){
     if(notice) notice.style.display='block';
   }
 
-  function goliathShowApp(){
+function goliathShowApp(){
     const gate=document.getElementById('authGate');
     const root=document.getElementById('appRoot');
     if(gate) gate.style.display='none';
     if(root) root.style.display='';
+    const hasProfile = window.db && window.db.profile && window.db.profile.name;
+    if(!hasProfile && typeof window.show==='function'){
+      window.show('profile', document.querySelectorAll('nav button')[0]);
+    }
   }
   function goliathShowGate(){
     const gate=document.getElementById('authGate');
