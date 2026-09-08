@@ -1002,6 +1002,7 @@ import {
 
       window.goliathEnablePush = async function(){
         try{
+          if(!('Notification' in window)){ alert('Ce navigateur ne propose pas les notifications (souvent le cas des navigateurs avec bloqueur de pub intégré). Essaie avec Chrome ou Firefox.'); return; }
           if(!('serviceWorker' in navigator)){ alert('Ton navigateur ne supporte pas les notifications push.'); return; }
           const registration = await navigator.serviceWorker.register('firebase-messaging-sw.js');
           const permission = await Notification.requestPermission();
