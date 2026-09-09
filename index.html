@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Goliath Manager</title>
+<meta name="color-scheme" content="light">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#087f3e">
 <style>
     .scroll-text {
   display: inline-block;
@@ -498,6 +501,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 const KEY='GOLIATH_MANAGER_V5_DATA';
 let db=JSON.parse(localStorage.getItem(KEY)||'{"profile":{},"lots":[],"active":null}');
 window.db=db;
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('firebase-messaging-sw.js').catch(function(e){console.warn('SW:',e)}); }
 const $=id=>document.getElementById(id), today=new Date().toISOString().slice(0,10);
 $('ldate').value=today;$('rdate').value=today;
 function save(){localStorage.setItem(KEY,JSON.stringify(db));render()}
