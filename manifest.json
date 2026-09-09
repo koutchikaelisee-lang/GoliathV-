@@ -1,0 +1,13 @@
+{
+  "name": "Goliath Manager",
+  "short_name": "Goliath",
+  "description": "Plateforme de gestion d'élevage de poulets Goliath",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#087f3e",
+  "theme_color": "#087f3e",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
