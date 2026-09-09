@@ -17,3 +17,8 @@ messaging.onBackgroundMessage((payload) => {
   const body = (payload.notification && payload.notification.body) || '';
   self.registration.showNotification(title, { body: body, icon: undefined });
 });
+self.addEventListener('install', function(e){ self.skipWaiting(); });
+self.addEventListener('activate', function(e){ self.clients.claim(); });
+self.addEventListener('fetch', function(e){
+  e.respondWith(fetch(e.request).catch(function(){ return caches.match(e.request); }));
+});
