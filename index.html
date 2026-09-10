@@ -639,7 +639,6 @@ function exportLotPDF(){
 
   doc.save((l.name.replace(/[^a-z0-9]/gi,'_')) + '_fiche.pdf');
 }
-</parameter>
 function exportCSV(){let a=[['Date','Lot','Age jours','Début','Morts','Vendus','Vivants','Poids moyen kg','Aliment kg','Coût F CFA','Observations']];db.lots.forEach(l=>l.records.forEach(r=>a.push([r.date,l.name,age(l,r.date),r.start,r.deaths,r.sold,r.start-r.deaths-r.sold,r.avg.toFixed(2),r.feed,r.cost,r.obs])));let csv=a.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(';')).join('\n'),b=new Blob([csv],{type:'text/csv;charset=utf-8'}),a1=document.createElement('a');a1.href=URL.createObjectURL(b);a1.download='goliath_manager_v5_releves.csv';a1.click()}
 function deleteLot(id){let l=db.lots.find(x=>x.id===id);if(!l)return;if(!confirm('Supprimer le lot « '+l.name+' » ?\nCette action supprimera aussi ses relevés et données associés.'))return;db.lots=db.lots.filter(x=>x.id!==id);if(db.active===id)db.active=db.lots.length?db.lots[0].id:null;save();}
 function resetAll(){if(confirm('Effacer toutes les données ?')){localStorage.removeItem(KEY);location.reload()}}
