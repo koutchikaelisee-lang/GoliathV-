@@ -201,7 +201,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
   <div class="auth-gate-box">
     <h2 style="margin-top:0">🐔 GOLIATH MANAGER</h2>
     <p class="muted">Connecte-toi ou crée un compte pour accéder à ton espace éleveur. Tes données seront sauvegardées et disponibles à chaque connexion.</p>
-    <form id="gateAuthForm" autocomplete="on">
+<form id="gateAuthForm" autocomplete="on">
       <label>Email</label>
       <input id="gateEmail" type="email" autocomplete="username" required>
       <label>Mot de passe</label>
@@ -211,6 +211,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
         <button type="button" class="secondary" onclick="gateRegister()">➕ Créer un compte</button>
       </div>
     </form>
+    <p style="text-align:center;margin:8px 0"><a href="#" onclick="gateForgotPassword();return false;">Mot de passe oublié ?</a></p>
     <p id="gateMessage" class="muted"></p>
     <div id="gateOfflineNotice" class="notice" style="display:none">Connexion au service cloud indisponible pour le moment. Réessaie plus tard.</div>
   </div>
@@ -452,7 +453,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
 <!-- V16 : calculateur remplacé par celui du module Conseils du fichier original fourni -->
 <section id="calculator" class="page">
-  <h2>🧮 Calculateur Goliath</h2>
+  <h2>🧮 Calculateur Goliath & Poulets de chair.</h2>
   <div class="eleveur-help-container">
     <div class="help-card">
       <h3>🧮 Calculateurs Rapides pour l'Éleveur</h3>
@@ -460,18 +461,17 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <!-- Calculateur 1 : Estimation de la Ration -->
         <div class="calc-box">
           <h4>Ration Alimentaire Quotidienne</h4>
+          <label for="rationType">Type de volaille :</label>
+          <select id="rationType" onchange="updateRationOptions()">
+            <option value="goliath">🐔 Goliath</option>
+            <option value="chair">🐥🐥 Poulets de chair</option>
+          </select>
+
           <label for="effectif">Effectif du lot (nombre d'oiseaux) :</label>
           <input type="number" id="effectif" placeholder="Ex: 100" min="1">
 
           <label for="ageSemaine">Stade / Âge des sujets :</label>
-          <select id="ageSemaine">
-            <option value="15">Semaine 1 (~15g / sujet)</option>
-            <option value="30">Semaine 2 (~30g / sujet)</option>
-            <option value="50">Semaine 3 (~50g / sujet)</option>
-            <option value="70">Semaine 4 (~70g / sujet)</option>
-            <option value="90">Semaine 5 à 8 (~90g / sujet)</option>
-            <option value="120">Semaine 9 et plus (~120g / sujet)</option>
-          </select>
+          <select id="ageSemaine"></select>
 
           <button onclick="calculerRation()">Estimer le besoin (kg)</button>
           <div id="resultRation" class="result-display" style="display:none;"></div>
@@ -480,15 +480,17 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
         <!-- Calculateur 2 : Capacité du Poulailler -->
         <div class="calc-box">
           <h4>Capacité d'Accueil (Densité)</h4>
+          <label for="densityType">Type de volaille :</label>
+          <select id="densityType" onchange="updateDensityOptions()">
+            <option value="goliath">🐔 Goliath</option>
+            <option value="chair">🍗 Poulet de chair</option>
+          </select>
+
           <label for="nbSujets">Nombre de sujets :</label>
           <input type="number" id="nbSujets" placeholder="Ex: 100" min="1">
 
           <label for="typeStade">Stade d'élevage :</label>
-          <select id="typeStade">
-            <option value="30">Poussinière (0 à 4 sem. : ~30/m²)</option>
-            <option value="10">Croissance (5 à 12 sem. : ~10/m²)</option>
-            <option value="6">Adulte / Finition (~6/m²)</option>
-          </select>
+          <select id="typeStade"></select>
 
           <button onclick="calculerDensite()">Calculer l'espace nécessaire</button>
           <div id="resultDensite" class="result-display" style="display:none;"></div>
@@ -496,11 +498,9 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
       </div>
     </div>
-      </div>
-    </div>
   </div>
 </section>
-<div class="modal" id="lotModal"><div class="box"><h2>➕ Créer un lot Goliath</h2><form id="lotForm"><div class="formgrid"><div><label>Nom du lot</label><input id="lname" required></div><div><label>Effectif initial</label><input id="lcount" type="number" min="1" value="100" required></div><div><label>Date de mise en place</label><input id="ldate" type="date" required></div><div><label>Prix / poussin (F)</label><input id="lprice" type="number" min="0" value="700" required></div><div><label>Objectif poids final (kg)</label><input id="target" type="number" step=".01" min="0" value="2.5"></div><div><label>Âge objectif (jours)</label><input id="targetAge" type="number" min="1" value="90"></div></div><label>Fournisseur</label><input id="supplier"><div class="formactions"><button type="button" class="secondary" onclick="closeM('lotModal')">Annuler</button><button class="primary">Créer le lot</button></div></form></div></div>
+<div class="modal" id="lotModal"><div class="box"><h2>➕ Créer un lot</h2><form id="lotForm"><div class="formgrid"><div><label>Type de volaille</label><select id="lptype"><option value="goliath">🐔 Goliath</option><option value="chair">🐥🐥Poulet de chair</option></select></div><div><label>Nom du lot</label><input id="lname" required></div><div><label>Effectif initial</label><input id="lcount" type="number" min="1" value="100" required></div><div><label>Date de mise en place</label><input id="ldate" type="date" required></div><div><label>Prix / poussin (F)</label><input id="lprice" type="number" min="0" value="700" required></div><div><label>Objectif poids final (kg)</label><input id="target" type="number" step=".01" min="0" value="2.5"></div><div><label>Âge objectif (jours)</label><input id="targetAge" type="number" min="1" value="90"></div></div><label>Fournisseur</label><input id="supplier"><div class="formactions"><button type="button" class="secondary" onclick="closeM('lotModal')">Annuler</button><button class="primary">Créer le lot</button></div></form></div></div>
 
 <div class="modal" id="recordModal"><div class="box"><h2>📝 Ajouter un relevé</h2><form id="recordForm"><label>Lot</label><select id="rlot"></select><div class="formgrid"><div><label>Date</label><input id="rdate" type="date" required></div><div><label>Effectif début</label><input id="rstart" type="number" min="0" required></div><div><label>Morts</label><input id="rdeath" type="number" min="0" value="0"></div><div><label>Vendus / retirés</label><input id="rsold" type="number" min="0" value="0"></div><div><label>Nombre pesé</label><input id="rweighed" type="number" min="1" value="10"></div><div><label>Poids total pesé (kg)</label><input id="rtotalweight" type="number" min="0" step=".01" required></div><div><label>Aliment consommé (kg)</label><input id="rfeed" type="number" min="0" step=".1" value="0"></div><div><label>Coût aliment (F)</label><input id="rcfeed" type="number" min="0" value="0"></div><div><label>Santé / vaccins (F)</label><input id="rchealth" type="number" min="0" value="0"></div><div><label>Main-d'œuvre (F)</label><input id="rclabor" type="number" min="0" value="0"></div><div><label>Autres coûts (F)</label><input id="rcother" type="number" min="0" value="0"></div></div><label>Observations</label><textarea id="robs"></textarea><div class="formactions"><button type="button" class="secondary" onclick="closeM('recordModal')">Annuler</button><button class="primary">💾 Enregistrer</button></div></form></div></div>
 
@@ -520,7 +520,7 @@ function openLot(){$('lname').value='LOT GOLIATH #'+String(db.lots.length+1).pad
 function closeM(id){$(id).classList.remove('show')}
 function openRecord(){if(!db.lots.length){alert('Créez d’abord un lot.');return}$('rlot').innerHTML=db.lots.map(l=>`<option value="${l.id}">${l.name}</option>`).join('');let l=lot()||db.lots[0];$('rlot').value=l.id;$('rstart').value=l.current;$('rdate').value=today;$('recordModal').classList.add('show')}
 function setActive(id){db.active=id;save()}
-$('lotForm').addEventListener('submit',e=>{e.preventDefault();let n=+$('lcount').value,id=Date.now();db.lots.push({id,name:$('lname').value,initial:n,current:n,date:$('ldate').value,price:+$('lprice').value,target:+$('target').value,targetAge:+$('targetAge').value,supplier:$('supplier').value,deaths:0,feed:0,expenses:0,sold:0,records:[]});db.active=id;save();closeM('lotModal')});
+$('lotForm').addEventListener('submit',e=>{e.preventDefault();let n=+$('lcount').value,id=Date.now();db.lots.push({id,poultryType:$('lptype').value,name:$('lname').value,initial:n,current:n,date:$('ldate').value,price:+$('lprice').value,target:+$('target').value,targetAge:+$('targetAge').value,supplier:$('supplier').value,deaths:0,feed:0,expenses:0,sold:0,records:[]});db.active=id;save();closeM('lotModal')});
 $('recordForm').addEventListener('submit',e=>{e.preventDefault();let l=db.lots.find(x=>x.id==+$('rlot').value),st=+$('rstart').value,d=+$('rdeath').value,s=+$('rsold').value,w=+$('rweighed').value,tw=+$('rtotalweight').value,f=+$('rfeed').value,c=[+$('rcfeed').value,+$('rchealth').value,+$('rclabor').value,+$('rcother').value].reduce((a,b)=>a+b,0);if(!l||d+s>st){alert('Vérifiez l’effectif : morts + vendus ne doivent pas dépasser le début de période.');return}l.current=st-d-s;l.deaths+=d;l.sold+=s;l.feed+=f;l.expenses+=c;l.records.push({date:$('rdate').value,start:st,deaths:d,sold:s,weighed:w,totalWeight:tw,avg:tw/w,feed:f,cost:c,obs:$('robs').value});db.active=l.id;save();closeM('recordModal');$('recordForm').reset();$('rdate').value=today});
 $('profileForm').addEventListener('submit',e=>{e.preventDefault();db.profile={name:$('name').value,firstname:$('firstname').value,phone:$('phone').value,location:$('loc').value,type:$('ptype').value};save();renderProfileSummary();$('profileFormCard').style.display='none';show('home',document.querySelectorAll('nav button')[1]);alert('Profil enregistré.')});
 function editProfile(){
@@ -702,20 +702,34 @@ function renderStock(){
  notifyStockAlert();
 }
 /* Normes de consommation (mêmes repères que le calculateur de ration) */
+function buildRationOptions(base, maxWeeks){
+  const opts=[];
+  for(let w=1; w<=maxWeeks; w++){
+    const g = base + 5*(w-1);
+    opts.push({v:g, l:'Semaine '+w+' (~'+g+'g / sujet)'});
+  }
+  return opts;
+}
+function updateRationOptions(){
+  const type=document.getElementById('rationType').value;
+  const opts = type==='chair' ? buildRationOptions(20,13) : buildRationOptions(15,13);
+  document.getElementById('ageSemaine').innerHTML = opts.map(o=>`<option value="${o.v}">${o.l}</option>`).join('');
+}
+updateRationOptions();
+
 function goliathGramsParSujet(ageSemaines){
-  if(ageSemaines<=1) return 15;
-  if(ageSemaines<=2) return 30;
-  if(ageSemaines<=3) return 50;
-  if(ageSemaines<=4) return 70;
-  if(ageSemaines<=8) return 90;
-  return 120;
+  return 15 + 5*(ageSemaines-1);
+}
+function chairGramsParSujet(ageSemaines){
+  return 20 + 5*(ageSemaines-1);
 }
 function goliathConsoQuotidienneKg(){
   let totalG=0;
   (db.lots||[]).forEach(l=>{
     const ageSemaines=Math.max(1,Math.ceil(age(l)/7));
     const vivants=Number(l.current)||0;
-    totalG+=vivants*goliathGramsParSujet(ageSemaines);
+    const grams = l.poultryType==='chair' ? chairGramsParSujet(ageSemaines) : goliathGramsParSujet(ageSemaines);
+    totalG+=vivants*grams;
   });
   return totalG/1000;
 }
@@ -1054,7 +1068,7 @@ render=function(){
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
   import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword,
-    createUserWithEmailAndPassword, signOut
+    createUserWithEmailAndPassword, signOut, sendPasswordResetEmail
   } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 import {
     getFirestore, doc, setDoc, getDoc
@@ -1142,6 +1156,16 @@ function goliathShowApp(){
     if(root) root.style.display='none';
   }
   window.gateMessage=function(msg){ const el=document.getElementById('gateMessage'); if(el) el.textContent=msg; };
+  window.gateForgotPassword=async function(){
+    const c=window.goliathCloud;
+    if(!c || !c.ready) return window.gateMessage('Service cloud indisponible pour le moment.');
+    const email=document.getElementById('gateEmail').value.trim();
+    if(!email){ window.gateMessage('Renseigne d’abord ton email ci-dessus, puis clique sur "Mot de passe oublié ?".'); return; }
+    try{
+      await sendPasswordResetEmail(c.auth, email);
+      window.gateMessage('Email de réinitialisation envoyé à '+email+'. Vérifie ta boîte mail (et les spams).');
+    }catch(e){ window.gateMessage('Impossible d’envoyer l’email : '+(e.code||e.message)); }
+  };
   window.gateRegister=async function(){
     const c=window.goliathCloud;
     if(!c || !c.ready) return window.gateMessage('Service cloud indisponible pour le moment.');
@@ -1183,6 +1207,20 @@ window.calculerRation = function() {
   resultDiv.innerHTML = `Besoin estimé : <strong>${totalKg.toFixed(2)} kg</strong> / jour.`;
 }
 
+function updateDensityOptions(){
+  const type=document.getElementById('densityType').value;
+  const opts = type==='chair' ? [
+    {v:34, l:'Démarrage (0 à 3 sem. : ~34/m²)'},
+    {v:16, l:'Croissance (4 à 5 sem. : ~16/m²)'},
+    {v:10, l:'Finition (6 sem. et + : ~10/m²)'}
+  ] : [
+    {v:30, l:'Poussinière (0 à 4 sem. : ~30/m²)'},
+    {v:10, l:'Croissance (5 à 12 sem. : ~10/m²)'},
+    {v:6, l:'Adulte / Finition (~6/m²)'}
+  ];
+  document.getElementById('typeStade').innerHTML = opts.map(o=>`<option value="${o.v}">${o.l}</option>`).join('');
+}
+updateDensityOptions();
 window.calculerDensite = function() {
   const nbSujets = parseFloat(document.getElementById('nbSujets').value);
   const ratio = parseFloat(document.getElementById('typeStade').value);
