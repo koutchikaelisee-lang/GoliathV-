@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Goliath Manager</title>
+<title>Goliath Manager — Gestion d'élevage de poulets Goliath | Mahutin Agrodigital</title>
 <meta name="description" content="Goliath Manager : l'appli de Mahutin Agrodigital pour gérer votre élevage de poulets Goliath — suivi des lots, stock d'aliments, rentabilité et alertes automatiques.">
 <meta property="og:title" content="Goliath Manager — Mahutin Agrodigital">
 <meta property="og:description" content="Gérez votre élevage de poulets Goliath depuis votre téléphone : lots, stock, rentabilité, alertes automatiques.">
@@ -25,29 +25,109 @@
   90% { transform: translateX(-100%); } /* Sortie du texte */
   100% { transform: translateX(-100%); }
 }
-
-.hero-banner {
+.hero.hero-banner {
   overflow: hidden;
   white-space: nowrap;
+  background: #007C64; !important 
+  border-radius: 30px;
+  padding: 5px;
+  width: 100%;
+}
+
+.defilement {
+    white-space: nowrap;
+    overflow: hidden;
+    animation: defiler 8s linear infinite;
+    font-style: Italic;
+    font-weight: 750;
+}
+
+@keyframes defiler {
+    from {
+        transform: translateX(100%);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
 }
 :root{--g:#087f3e;--bg:#f3f7f4;--line:#dce6df;--text:#17301f;--muted:#68746d;--red:#b3261e;--orange:#a86500}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
-header{background:var(--g);color:white;padding:17px}header div{max-width:1100px;margin:auto}
+header{background:#007C64;color:white;padding:17px}header div{max-width:1100px;margin:auto}
 nav{display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)}
-nav button{white-space:nowrap;border:0;border-radius:9px;padding:10px 12px;background:#fff;font-weight:bold}nav button.active{background:#087f3e;color:#fff}
+nav button{white-space:nowrap;border:0;border-radius:9px;padding:5px 12px;background:#007C64;font-weight:bold}nav button.active{background:#087f3e;color:#fff}
 main{max-width:1100px;margin:auto;padding:15px}.page{display:none}.page.active{display:block}
-.card,.hero{background:#fff;border-radius:16px;padding:16px;margin:11px 0;box-shadow:0 3px 14px #0001}.hero{background:linear-gradient(135deg,#087f3e,#0c9b4d);color:#fff}
+.card,.hero{background:#fff;border-radius:16px;padding:10px;margin:5px 0;box-shadow:0 3px 14px #0001}.hero{background:linear-gradient(135deg,#087f3e,#0c9b4d);color:#fff}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.kpi{background:#fff;border-radius:14px;padding:13px}.big{font-size:24px;font-weight:800;margin-top:5px}.muted{font-size:12px;color:var(--muted)}.hero .muted{color:#e5f4ea}
-button.primary{background:#087f3e;color:white}button.secondary{background:#fff;color:#087f3e;border:1px solid var(--line)}button.danger{background:#fff0f0;color:var(--red);border:1px solid #f1cccc}
+button.primary{background:#007C64;color:white}button.secondary{background:#fff;color:#2E8B57;border:1px solid var(--line)}button.danger{background:#fff0f0;color:var(--red);border:1px solid #f1cccc}
 .actions{display:flex;gap:8px;flex-wrap:wrap;margin:11px 0}.actions button{padding:10px 13px;border-radius:9px;border:0;font-weight:bold}
 .list{display:grid;gap:9px}.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.badge{display:inline-block;background:#e2f3e7;color:var(--g);border-radius:20px;padding:5px 9px;font-size:10px;font-weight:bold}.badge.warn{background:#fff0d8;color:var(--orange)}.badge.red{background:#ffe5e3;color:var(--red)}
+.badge{display:inline-block;background:#007C64;color:var(--g);border-radius:20px;padding:5px 9px;font-size:10px;font-weight:bold}.badge.warn{background:#fff0d8;color:var(--orange)}.badge.red{background:#ffe5e3;color:var(--red)}
 label{display:block;font-size:12px;font-weight:bold;margin:9px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #cbd7cf;border-radius:9px;background:#fff;font-size:14px}textarea{min-height:65px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .table{overflow:auto}table{width:100%;border-collapse:collapse}th,td{padding:9px;border-bottom:1px solid var(--line);font-size:12px;text-align:left}
 .notice{padding:12px;border-radius:10px;background:#f1f8f3;border-left:5px solid var(--g);margin:8px 0}.notice.warn{background:#fff6e6;border-left-color:var(--orange)}.notice.red{background:#fff0ef;border-left-color:var(--red)}
 canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;background:#fff}.modal{display:none;position:fixed;inset:0;background:#0008;align-items:center;justify-content:center;padding:14px;z-index:20}.modal.show{display:flex}.box{background:#fff;border-radius:17px;padding:19px;width:min(650px,100%);max-height:92vh;overflow:auto}.box h2{margin-top:0}.formactions{display:flex;gap:8px;margin-top:15px}.formactions button{flex:1}
 @media(max-width:760px){.grid,.kpis{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr}}@media(max-width:430px){.grid,.kpis{grid-template-columns:1fr}}
 
+.hero hero-banner{
+background-color: #007C64;
+}
+
+.diaporama {
+    position: relative;
+    width: 90%;
+    height: 300px;
+    margin: 20px auto;
+    overflow: hidden;
+    border: 3px solid white;
+    border-radius: 15px;
+}
+
+.diaporama img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: defilement 12s infinite;
+}
+
+.diaporama img:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.diaporama img:nth-child(2) {
+    animation-delay: 3s;
+}
+
+.diaporama img:nth-child(3) {
+    animation-delay: 6s;
+}
+
+.diaporama img:nth-child(4) {
+    animation-delay: 9s;
+}
+
+@keyframes defilement {
+    0%, 20% {
+        opacity: 1;
+    }
+
+    25%, 100% {
+        opacity: 0;
+    }
+}
+.video {
+    width: 90%;
+    margin: auto;
+}
+
+.video video {
+    width: 100%;
+    margin-bottom: 20px;
+    border: 1px solid white;
+    border-radius: 10px;
+}
 /* V6 ADDITION - STOCK & ALIMENTS */
 .stock-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
 .stock-low{border-left:5px solid var(--red)!important;background:#fff5f4!important}
@@ -125,7 +205,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
   text-decoration:none;
   font-weight:800;
   font-size:14px;
-  background:#25D366;
+  background:#007C64;
   color:#fff;
   box-shadow:0 6px 20px rgba(0,0,0,.22);
   transition:transform .2s ease, box-shadow .2s ease;
@@ -196,7 +276,6 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
 </head>
 <body>
-
 <div id="authGate" class="auth-gate">
   <div class="auth-gate-box">
     <h2 style="margin-top:0">🐔 GOLIATH MANAGER</h2>
@@ -230,9 +309,24 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 
 <header>
   <div>
-    <h2 style="margin:0">🐔 MAHUTIN AGRODIGITAL</h2>
-    <div class="muted" style="color:#000;font-size:10px">GOLIATH MANAGER—plateforme d'accompagnement et de suivi technique</div>
+    <h2 style="margin:0; text-align: center;">🐔 MAHUTIN AGRODIGITAL</h2>
+    <div class="muted" style="color:#fff;font-size:12px; text-align: center;">GOLIATH MANAGER—plateforme d'accompagnement et de suivi technique</div>
   </div>
+  <div class="diaporama">
+<img src="image/image1.jpg" alt="Des poulets">
+<img src="image/image1.jpg" alt="Un poulet">
+<img src="image/image2.jpg" alt="Un poulet noir">
+<img src="image/image3.jpg" alt="Deux poulets">
+<img src="image/images.jpg" alt="Des poulets en divagation">
+<img src="image/image6.jpg" alt="Un poussin éclore">
+<img src="image/image7.jpg" alt="Des poussins à l'éclosion">
+</div>
+<div class="video">
+    <video controls>
+        <source src="vidéo/ferme.mp4" type="video/mp4">
+    </video>
+</div>
+<div class="defilement">Tout ce qu'il vous faut pour commencer votre élevage.</div>
 </header>
 
 <nav style="display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)">
@@ -242,7 +336,7 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
   <button onclick="show('records',this)">📝 Relevés</button>
   <button onclick="show('analysis',this)">📊 Analyse</button>
   <button onclick="show('profit',this)">💰 Rentabilité</button><button onclick="show('intelligence',this)">🧠 Intelligence</button><button onclick="show('marketplace',this)">🛒 Marketplace</button><button onclick="show('ecosysteme',this)">🚀 Écosystème</button><button onclick="show('cloud',this)">☁️ Compte Cloud</button><button onclick="show('calculator',this)">🧮 Calculateur</button>
-  <button onclick="show('stock',this)">📦 Stock & Aliments</button>
+  <button onclick="show('stock',this)">?? Stock & Aliments</button>
   <button onclick="show('advice',this)">📚 Conseils</button>
 </nav>
 <main>
@@ -271,8 +365,8 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
 <div class="notice">💰 <b>Rentabilité :</b> incluez poussins, aliment, santé, main-d'œuvre et autres charges avant de fixer le prix.</div>
 
 <div class="card">
-  <h3>💉 Programme vaccinal indicatif</h3>
-  <div class="notice warn">⚠️ Ce calendrier est un repère indicatif. Le programme réel doit être adapté à la zone, aux risques sanitaires, aux vaccins disponibles et aux recommandations d’un vétérinaire ou professionnel de santé animale.</div>
+  <h3>💉 Programme vaccinal indicatif — 🐔 Goliath</h3>
+  <div class="notice warn">⚠️ Ce calendrier est un repère indicatif. Le programme réel doit être adapté à la zone, aux risques sanitaires, aux vaccins disponibles et aux recommandations d'un vétérinaire ou professionnel de santé animale.</div>
   <div class="table">
     <table>
       <thead><tr><th>Âge</th><th>Maladie visée / traitement</th><th>Mode d'administration</th></tr></thead>
@@ -283,6 +377,22 @@ canvas{width:100%;height:250px;border:1px solid var(--line);border-radius:12px;b
         <tr><td>Jour 21</td><td>Newcastle (Lasota)</td><td>Eau de boisson</td></tr>
         <tr><td>Semaine 4</td><td>Prévention coccidiose</td><td>Selon le programme sanitaire recommandé</td></tr>
         <tr><td>Semaine 6</td><td>Variole aviaire</td><td>Transfixion alaire</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card">
+  <h3>💉 Programme vaccinal indicatif — 🍗 Poulet de chair</h3>
+  <div class="notice warn">⚠️ Ce calendrier est un repère indicatif, adapté au cycle plus court des poulets de chair. Le programme réel doit être adapté à la zone, aux risques sanitaires, aux vaccins disponibles et aux recommandations d'un vétérinaire ou professionnel de santé animale.</div>
+  <div class="table">
+    <table>
+      <thead><tr><th>Âge</th><th>Maladie visée / traitement</th><th>Mode d'administration</th></tr></thead>
+      <tbody>
+        <tr><td>Jour 1</td><td>Newcastle (HB1) + Marek</td><td>Goutte oculaire / trempage de bec</td></tr>
+        <tr><td>Jour 7</td><td>Gumboro (1ère dose)</td><td>Eau de boisson</td></tr>
+        <tr><td>Jour 14</td><td>Newcastle (Lasota) + Gumboro (rappel)</td><td>Eau de boisson</td></tr>
+        <tr><td>Jour 21</td><td>Prévention coccidiose</td><td>Selon le programme sanitaire recommandé</td></tr>
       </tbody>
     </table>
   </div>
