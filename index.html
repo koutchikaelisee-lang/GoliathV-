@@ -33,27 +33,28 @@
   padding: 5px;
   width: 100%;
 }
-
 .defilement {
     display: block;
-    width: 100%;
+    width: max-content;
+    max-width: none;
     white-space: nowrap;
-    overflow: hidden;
-    animation: defiler 12s linear infinite;
-    font-style: Italic;
+    overflow: visible;
+    flex-shrink: 0;
+    font-style: italic;
     font-weight: 600;
     font-size: 16px;
+    animation: defiler 12s linear infinite;
 }
 
 @keyframes defiler {
-    from {
-        transform: translateX(100%);
+    0% {
+        transform: translateX(100vw);
     }
-
-    to {
+    100% {
         transform: translateX(-100%);
     }
 }
+
 :root{--g:#087f3e;--bg:#f3f7f4;--line:#dce6df;--text:#17301f;--muted:#68746d;--red:#b3261e;--orange:#a86500}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:var(--text)}
 header{background:#007C64;color:white;padding:17px}header div{max-width:1100px;margin:auto}
@@ -329,7 +330,9 @@ background-color: #007C64;
         <source src="ferme.mp4" type="video/mp4">
     </video>
 </div>
-<div class="defilement">Tout ce qu'il vous faut pour commencer votre élevage.</div>
+<div style="width:100%; overflow:hidden; white-space:nowrap;">
+    <div class="defilement">Tout ce qu'il vous faut pour commencer votre élevage.</div>
+</div>
 </header>
 
 <nav style="display:flex;gap:5px;overflow:auto;background:#fff;padding:8px;position:sticky;top:0;z-index:5;border-bottom:1px solid var(--line)">
