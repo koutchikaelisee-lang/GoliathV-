@@ -41,14 +41,15 @@
     animation: defiler 12s linear infinite;
     font-style: Italic;
     font-weight: 600;
+    font-size: 16px;
 }
 
 @keyframes defiler {
-    0% {
+    from {
         transform: translateX(100%);
     }
 
-    100% {
+    to {
         transform: translateX(-100%);
     }
 }
